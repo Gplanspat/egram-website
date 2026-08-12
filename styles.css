@@ -2232,3 +2232,60 @@ section {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+/* Consultant Registration - State Positions */
+
+.states-list {
+    width: 100%;
+}
+
+.state-section {
+    margin-bottom: 2rem;
+}
+
+.state-section h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+}
+
+.position-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.position-box {
+    background: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem 0.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.position-box:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.position-status {
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.position-status.available {
+    color: var(--secondary-dark);
+}
+
+.position-number {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
