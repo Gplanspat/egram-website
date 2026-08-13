@@ -444,7 +444,7 @@
         <strong id="formSelectedPosition"></strong>
     </div>
 
-    <form id="consultantRegistrationForm">
+   <form id="consultantRegistrationForm" enctype="multipart/form-data">
 
         <div class="form-grid">
 
@@ -1209,13 +1209,21 @@ loadConsultantPositions();
 
     event.preventDefault();
 
-    const proof = document
-  .getElementById("paymentProof")
-  .files[0];
-  const fileName = proof.name;
+    const proof = document.getElementById("paymentProof").files[0];
 
 if (!proof) {
   alert("Payment proof is required.");
+  return;
+}
+
+const fileName = `${Date.now()}-${proof.name}`;
+
+const { error: uploadError } = await supabaseClient.storage
+  .from("consultant-receipts")
+  .upload(fileName, proof);
+
+if (uploadError) {
+  alert(uploadError.message);
   return;
 }
 
