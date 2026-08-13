@@ -164,6 +164,177 @@
     text-align: center;
     padding: 10px;
 }
+/* Selected consultant position */
+.position-box.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    transform: translateY(-2px);
+}
+
+.position-box.selected .position-status {
+    color: #2563eb;
+}
+
+.selected-position {
+    display: none;
+    margin: 0 auto 30px;
+    max-width: 700px;
+    background: #eff6ff;
+    border: 1px solid #93c5fd;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.selected-position.show {
+    display: block;
+}
+
+.selected-position-title {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 6px;
+}
+
+.selected-position-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+
+/* Consultant registration form */
+.registration-form-section {
+    display: none;
+    max-width: 800px;
+    margin: 35px auto 0;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.registration-form-section.show {
+    display: block;
+}
+
+.registration-form-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.registration-form-header h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.registration-form-header p {
+    margin: 0;
+    color: #64748b;
+}
+
+.selected-position-summary {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.selected-position-summary strong {
+    display: block;
+    color: #1d4ed8;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    margin-bottom: 7px;
+    color: #1f2937;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    font-size: 15px;
+    outline: none;
+    background: #fff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-submit {
+    margin-top: 25px;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.form-submit:hover {
+    background: #1d4ed8;
+}
+
+.cancel-registration {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #64748b;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+@media (max-width: 700px) {
+    .registration-form-section {
+        padding: 22px 16px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+}
 
     </style>
 </head>
@@ -195,6 +366,157 @@
                     Nigeria's 36 states and the Federal Capital Territory.
                 </span>
             </div>
+            <div id="selectedPosition" class="selected-position">
+    <div class="selected-position-title">
+        Selected Consultant Position
+    </div>
+
+    <div id="selectedPositionValue" class="selected-position-value">
+    </div>
+</div>
+
+<div id="registrationFormSection" class="registration-form-section">
+
+    <div class="registration-form-header">
+        <h2>Consultant Registration</h2>
+        <p>Complete your details to continue your consultant application.</p>
+    </div>
+
+    <div class="selected-position-summary">
+        Selected Consultant Position
+        <strong id="formSelectedPosition"></strong>
+    </div>
+
+    <form id="consultantRegistrationForm">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="fullName">Full Name *</label>
+                <input
+                    type="text"
+                    id="fullName"
+                    name="full_name"
+                    placeholder="Enter your full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="08012345678"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="whatsapp">WhatsApp Number</label>
+                <input
+                    type="tel"
+                    id="whatsapp"
+                    name="whatsapp"
+                    placeholder="WhatsApp number"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="occupation">Occupation *</label>
+                <input
+                    type="text"
+                    id="occupation"
+                    name="occupation"
+                    placeholder="Your occupation"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="stateOfResidence">State of Residence *</label>
+                <select id="stateOfResidence" name="state_of_residence" required>
+                    <option value="">Select your state</option>
+                    <option>Abia</option>
+                    <option>Adamawa</option>
+                    <option>Akwa Ibom</option>
+                    <option>Anambra</option>
+                    <option>Bauchi</option>
+                    <option>Bayelsa</option>
+                    <option>Benue</option>
+                    <option>Borno</option>
+                    <option>Cross River</option>
+                    <option>Delta</option>
+                    <option>Ebonyi</option>
+                    <option>Edo</option>
+                    <option>Ekiti</option>
+                    <option>Enugu</option>
+                    <option>Gombe</option>
+                    <option>Imo</option>
+                    <option>Jigawa</option>
+                    <option>Kaduna</option>
+                    <option>Kano</option>
+                    <option>Katsina</option>
+                    <option>Kebbi</option>
+                    <option>Kogi</option>
+                    <option>Kwara</option>
+                    <option>Lagos</option>
+                    <option>Nasarawa</option>
+                    <option>Niger</option>
+                    <option>Ogun</option>
+                    <option>Ondo</option>
+                    <option>Osun</option>
+                    <option>Oyo</option>
+                    <option>Plateau</option>
+                    <option>Rivers</option>
+                    <option>Sokoto</option>
+                    <option>Taraba</option>
+                    <option>Yobe</option>
+                    <option>Zamfara</option>
+                    <option>Federal Capital Territory (FCT) Abuja</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="address">Residential Address *</label>
+                <textarea
+                    id="address"
+                    name="address"
+                    placeholder="Enter your residential address"
+                    required
+                ></textarea>
+            </div>
+
+        </div>
+
+        <input type="hidden" id="selectedState" name="selected_state">
+        <input type="hidden" id="selectedPositionNumber" name="position_number">
+
+        <button type="submit" class="form-submit">
+            Continue Registration
+        </button>
+
+        <div
+            id="cancelRegistration"
+            class="cancel-registration"
+        >
+            ← Change Consultant Position
+        </div>
+
+    </form>
+</div>
 
             <div class="states-list">
 
@@ -648,7 +970,146 @@
 
         </div>
 
-    </main>
+  </main>
+
+<script>
+    let selectedConsultantPosition = null;
+
+    const positionBoxes =
+        document.querySelectorAll(".position-box");
+
+    const selectedPositionBox =
+        document.getElementById("selectedPosition");
+
+    const selectedPositionValue =
+        document.getElementById("selectedPositionValue");
+
+    const registrationFormSection =
+        document.getElementById("registrationFormSection");
+
+    const formSelectedPosition =
+        document.getElementById("formSelectedPosition");
+
+    const selectedState =
+        document.getElementById("selectedState");
+
+    const selectedPositionNumber =
+        document.getElementById("selectedPositionNumber");
+
+    const cancelRegistration =
+        document.getElementById("cancelRegistration");
+
+
+    positionBoxes.forEach((box) => {
+
+        box.addEventListener("click", () => {
+
+            // Remove previous selection
+            positionBoxes.forEach((item) => {
+                item.classList.remove("selected");
+            });
+
+            // Select clicked position
+            box.classList.add("selected");
+
+            // Find state
+            const stateSection =
+                box.closest(".state-section");
+
+            const stateName =
+                stateSection.querySelector("h3")
+                    .textContent
+                    .trim();
+
+            // Find position
+            const positionText =
+                box.querySelector(".position-number")
+                    .textContent
+                    .trim();
+
+            const positionNumber =
+                parseInt(
+                    positionText
+                        .replace("Position", "")
+                        .trim(),
+                    10
+                );
+
+            // Store selection
+            selectedConsultantPosition = {
+                state: stateName,
+                position_number: positionNumber
+            };
+
+            // Show selected position
+            selectedPositionValue.textContent =
+                `${stateName} — ${positionText}`;
+
+            selectedPositionBox.classList.add("show");
+
+            // Put selection into form
+            formSelectedPosition.textContent =
+                `${stateName} — ${positionText}`;
+
+            selectedState.value = stateName;
+            selectedPositionNumber.value = positionNumber;
+
+            // Show registration form
+            registrationFormSection.classList.add("show");
+
+            // Scroll to form
+            registrationFormSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+            console.log(
+                "Selected consultant position:",
+                selectedConsultantPosition
+            );
+        });
+
+    });
+
+
+    // Change position
+    cancelRegistration.addEventListener("click", () => {
+
+        registrationFormSection.classList.remove("show");
+
+        selectedPositionBox.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    });
+
+
+    // Form submission - Stage 2 only
+    document
+        .getElementById("consultantRegistrationForm")
+        .addEventListener("submit", (event) => {
+
+            event.preventDefault();
+
+            if (!selectedConsultantPosition) {
+                alert("Please select a consultant position first.");
+                return;
+            }
+
+            const formData =
+                new FormData(event.target);
+
+            console.log(
+                "Consultant registration data:",
+                Object.fromEntries(formData.entries())
+            );
+
+            alert(
+                "Registration details captured successfully. Payment and final submission will be added in the next stage."
+            );
+        });
+</script>
 
 </body>
 </html>
