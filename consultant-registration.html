@@ -1005,7 +1005,7 @@
 
     positionBoxes.forEach((box) => {
 
-        box.addEventListener("click", () => {
+       box.addEventListener("click", async () => {
 
             // Remove previous selection
             positionBoxes.forEach((item) => {
@@ -1039,10 +1039,18 @@
                 );
 
             // Store selection
-            selectedConsultantPosition = {
-                state: stateName,
-                position_number: positionNumber
-            };
+            const { data: position } = await supabaseClient
+  .from("consultant_positions")
+  .select("id, state, position_number")
+  .eq("state", stateName)
+  .eq("position_number", positionNumber)
+  .single();
+
+selectedConsultantPosition = {
+    position_id: position.id,
+    state: position.state,
+    position_number: position.position_number
+};
 
             // Show selected position
             selectedPositionValue.textContent =
@@ -1110,7 +1118,7 @@
         state_of_residence: formData.get("state_of_residence"),
         address: formData.get("address"),
         selected_state: formData.get("selected_state"),
-       position_id: selectedConsultantPosition.position.id,
+       position_id: selectedConsultantPosition.position_id,
 position_number: selectedConsultantPosition.position_number,
         payment_status: "pending",
         application_status: "pending"
