@@ -1110,7 +1110,8 @@
         state_of_residence: formData.get("state_of_residence"),
         address: formData.get("address"),
         selected_state: formData.get("selected_state"),
-        position_number: Number(formData.get("position_number")),
+       position_id: selectedConsultantPosition.id,
+position_number: selectedConsultantPosition.position_number,
         payment_status: "pending",
         application_status: "pending"
     };
