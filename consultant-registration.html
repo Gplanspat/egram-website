@@ -587,6 +587,10 @@
   required
   style="display:none"
 >
+
+<span id="fileName" style="display:block;margin-top:8px;color:#2563eb;">
+  No file selected
+</span>
   <small>
     Upload your bank transfer receipt (JPG, PNG or PDF)
   </small>
@@ -1310,6 +1314,19 @@ toggle.onclick = () => {
     toggle.textContent = "👁️";
   }
 };
+</script>
+<script>
+const paymentInput = document.getElementById("paymentProof");
+const uploadBtn = document.querySelector(".upload-btn");
+const fileName = document.getElementById("fileName");
+
+uploadBtn.addEventListener("click", () => paymentInput.click());
+
+paymentInput.addEventListener("change", () => {
+  fileName.textContent = paymentInput.files.length
+    ? paymentInput.files[0].name
+    : "No file selected";
+});
 </script>
 </body>
 </html>
