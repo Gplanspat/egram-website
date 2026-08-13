@@ -2289,3 +2289,25 @@ section {
     font-weight: 600;
     color: var(--text-dark);
 }
+
+.mobile-register-btn{
+  display:none;
+}
+
+@media (max-width:768px){
+  .mobile-register-btn{
+    display:block;
+    margin:20px;
+    padding:14px;
+    text-align:center;
+    background:#2563eb;
+    color:#fff;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+  }
+
+  .cta-button{
+    display:none;
+  }
+}
