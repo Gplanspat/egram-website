@@ -382,6 +382,17 @@
   color:#111827;
 }
 
+.upload-btn{
+  display:block;
+  padding:14px;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  background:#f8fafc;
+  cursor:pointer;
+  text-align:center;
+  font-weight:600;
+}
+
     </style>
 </head>
 
@@ -565,13 +576,17 @@
 </div>
 
 <div class="form-group full-width">
-  <label>Upload Payment Proof *</label>
-  <input
-    type="file"
-    id="paymentProof"
-    accept="image/*,.pdf"
-    required
-  >
+ <label for="paymentProof" class="upload-btn">
+  Upload Payment Receipt
+</label>
+
+<input
+  type="file"
+  id="paymentProof"
+  accept="image/*,.pdf"
+  required
+  style="display:none"
+>
   <small>
     Upload your bank transfer receipt (JPG, PNG or PDF)
   </small>
@@ -588,7 +603,7 @@
 </div>
 
         <button type="submit" class="form-submit">
-            Continue Registration
+            Submit Your Registration
         </button>
 
         <div
@@ -1197,6 +1212,7 @@ loadConsultantPositions();
     const proof = document
   .getElementById("paymentProof")
   .files[0];
+  const fileName = proof.name;
 
 if (!proof) {
   alert("Payment proof is required.");
