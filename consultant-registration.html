@@ -972,6 +972,9 @@
 
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
 <script>
     let selectedConsultantPosition = null;
 
@@ -1085,30 +1088,47 @@
     });
 
 
-    // Form submission - Stage 2 only
     document
-        .getElementById("consultantRegistrationForm")
-        .addEventListener("submit", (event) => {
+.getElementById("consultantRegistrationForm")
+.addEventListener("submit", async (event) => {
 
-            event.preventDefault();
+    event.preventDefault();
 
-            if (!selectedConsultantPosition) {
-                alert("Please select a consultant position first.");
-                return;
-            }
+    if (!selectedConsultantPosition) {
+        alert("Please select a consultant position first.");
+        return;
+    }
 
-            const formData =
-                new FormData(event.target);
+    const formData = new FormData(event.target);
 
-            console.log(
-                "Consultant registration data:",
-                Object.fromEntries(formData.entries())
-            );
+    const application = {
+        full_name: formData.get("full_name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        whatsapp: formData.get("whatsapp"),
+        occupation: formData.get("occupation"),
+        state_of_residence: formData.get("state_of_residence"),
+        address: formData.get("address"),
+        selected_state: formData.get("selected_state"),
+        position_number: Number(formData.get("position_number")),
+        payment_status: "pending",
+        application_status: "pending"
+    };
 
-            alert(
-                "Registration details captured successfully. Payment and final submission will be added in the next stage."
-            );
-        });
+    const { error } = await supabase
+        .from("consultant_applications")
+        .insert([application]);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+   alert("Application saved successfully!");
+
+event.target.reset();
+registrationFormSection.classList.remove("show");
+});
 </script>
 
 </body>
