@@ -520,6 +520,40 @@
         <input type="hidden" id="selectedState" name="selected_state">
         <input type="hidden" id="selectedPositionNumber" name="position_number">
 
+        <div class="form-group">
+  <label for="password">Create Password *</label>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Create a password"
+    required
+  >
+</div>
+
+<div class="form-group full-width">
+  <label>Upload Payment Proof *</label>
+  <input
+    type="file"
+    id="paymentProof"
+    accept="image/*,.pdf"
+    required
+  >
+  <small>
+    Upload your bank transfer receipt (JPG, PNG or PDF)
+  </small>
+</div>
+
+<div class="selected-position-summary">
+  **Bank:** Moniepoint MFB
+
+  **Account Name:** Spatcan Development Company Limited
+
+  **Account Number:** 4005624798
+
+  **Amount:** ₦250,000
+</div>
+
         <button type="submit" class="form-submit">
             Continue Registration
         </button>
@@ -996,6 +1030,49 @@
 
     const positionBoxes =
         document.querySelectorAll(".position-box");
+        async function loadConsultantPositions() {
+  const { data, error } = await supabaseClient
+    .from("consultant_positions")
+    .select("*")
+    .order("state")
+    .order("position_number");
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  document.querySelectorAll(".state-section").forEach(section => {
+    const state = section.querySelector("h3").textContent.trim();
+    const boxes = section.querySelectorAll(".position-box");
+
+    boxes.forEach((box, index) => {
+      const position = data.find(
+        p => p.state === state && p.position_number === index + 1
+      );
+
+      if (!position) return;
+
+      const statusEl = box.querySelector(".position-status");
+      box.classList.remove("disabled");
+
+      if (position.status === "available") {
+        statusEl.textContent = "AVAILABLE";
+        statusEl.className = "position-status available";
+      } else if (position.status === "held") {
+        statusEl.textContent = "HELD";
+        statusEl.className = "position-status held";
+        box.classList.add("disabled");
+      } else {
+        statusEl.textContent = "OCCUPIED";
+        statusEl.className = "position-status occupied";
+        box.classList.add("disabled");
+      }
+    });
+  });
+}
+
+loadConsultantPositions();
 
     const selectedPositionBox =
         document.getElementById("selectedPosition");
@@ -1021,83 +1098,48 @@
 
     positionBoxes.forEach((box) => {
 
-       box.addEventListener("click", async () => {
+      box.addEventListener("click", async () => {
+  if (box.classList.contains("disabled")) return;
 
-            // Remove previous selection
-            positionBoxes.forEach((item) => {
-                item.classList.remove("selected");
-            });
+  positionBoxes.forEach(item => item.classList.remove("selected"));
+  box.classList.add("selected");
 
-            // Select clicked position
-            box.classList.add("selected");
+  const stateName = box.closest(".state-section")
+    .querySelector("h3").textContent.trim();
 
-            // Find state
-            const stateSection =
-                box.closest(".state-section");
+  const positionNumber = Number(
+    box.querySelector(".position-number").textContent.replace("Position", "")
+  );
 
-            const stateName =
-                stateSection.querySelector("h3")
-                    .textContent
-                    .trim();
+  const { data: position, error } = await supabaseClient
+    .from("consultant_positions")
+    .select("id,state,position_number")
+    .eq("state", stateName)
+    .eq("position_number", positionNumber)
+    .eq("status", "available")
+    .single();
 
-            // Find position
-            const positionText =
-                box.querySelector(".position-number")
-                    .textContent
-                    .trim();
+  if (error || !position) {
+    alert("This position is no longer available.");
+    loadConsultantPositions();
+    return;
+  }
 
-            const positionNumber =
-                parseInt(
-                    positionText
-                        .replace("Position", "")
-                        .trim(),
-                    10
-                );
-
-            // Store selection
-            const { data: position } = await supabaseClient
-  .from("consultant_positions")
-  .select("id, state, position_number")
-  .eq("state", stateName)
-  .eq("status", "available")
-  .eq("position_number", positionNumber)
-  .single();
-
-selectedConsultantPosition = {
+  selectedConsultantPosition = {
     position_id: position.id,
     state: position.state,
     position_number: position.position_number
-};
+  };
 
-            // Show selected position
-            selectedPositionValue.textContent =
-                `${stateName} — ${positionText}`;
+  selectedPositionValue.textContent = `${stateName} — Position ${positionNumber}`;
+  selectedPositionBox.classList.add("show");
+  formSelectedPosition.textContent = `${stateName} — Position ${positionNumber}`;
+  selectedState.value = stateName;
+  selectedPositionNumber.value = positionNumber;
+  registrationFormSection.classList.add("show");
+});
 
-            selectedPositionBox.classList.add("show");
-
-            // Put selection into form
-            formSelectedPosition.textContent =
-                `${stateName} — ${positionText}`;
-
-            selectedState.value = stateName;
-            selectedPositionNumber.value = positionNumber;
-
-            // Show registration form
-            registrationFormSection.classList.add("show");
-
-            // Scroll to form
-            registrationFormSection.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-            console.log(
-                "Selected consultant position:",
-                selectedConsultantPosition
-            );
-        });
-
-    });
+});
 
 
     // Change position
@@ -1119,6 +1161,15 @@ selectedConsultantPosition = {
 
     event.preventDefault();
 
+    const proof = document
+  .getElementById("paymentProof")
+  .files[0];
+
+if (!proof) {
+  alert("Payment proof is required.");
+  return;
+}
+
     if (!selectedConsultantPosition) {
         alert("Please select a consultant position first.");
         return;
@@ -1137,18 +1188,35 @@ selectedConsultantPosition = {
         selected_state: formData.get("selected_state"),
        position_id: selectedConsultantPosition.position_id,
 position_number: selectedConsultantPosition.position_number,
-        payment_status: "pending",
-        application_status: "pending"
+
+password: formData.get("password"),
+payment_proof: fileName,
+
+payment_status: "pending",
+application_status: "pending"
     };
 
-    const { error } = await supabaseClient
-        .from("consultant_applications")
-        .insert([application]);
+   const { data: authData, error: authError } =
+  await supabaseClient.auth.signUp({
+    email: application.email,
+    password: application.password
+  });
 
-    if (error) {
-        alert(error.message);
-        return;
-    }
+if (authError) {
+  alert(authError.message);
+  return;
+}
+
+application.user_id = authData.user.id;
+
+const { error } = await supabaseClient
+  .from("consultant_applications")
+  .insert([application]);
+
+if (error) {
+  alert(error.message);
+  return;
+}
 
     const { error: holdError } = await supabaseClient
   .from("consultant_positions")
@@ -1162,10 +1230,8 @@ if (holdError) {
   return;
 }
 loadConsultantPositions();
-   alert("Application saved successfully!");
 
-event.target.reset();
-registrationFormSection.classList.remove("show");
+window.location.href = "consultant-dashboard.html";
 });
 </script>
 

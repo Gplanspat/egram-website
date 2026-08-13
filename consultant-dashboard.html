@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultant Dashboard</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f5f7fb;
+margin:0;
+}
+.header{
+background:#2563eb;
+color:#fff;
+padding:20px;
+}
+.container{
+max-width:900px;
+margin:20px auto;
+padding:15px;
+}
+.card{
+background:white;
+padding:20px;
+border-radius:14px;
+margin-bottom:18px;
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+.badge{
+display:inline-block;
+padding:8px 14px;
+border-radius:30px;
+font-weight:bold;
+}
+.pending{
+background:#fef3c7;
+color:#92400e;
+}
+.approved{
+background:#dcfce7;
+color:#166534;
+}
+button{
+padding:12px 18px;
+background:#2563eb;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+
+<h2>eGram Consultant Dashboard</h2>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h3 id="name">Loading...</h3>
+
+<p id="position"></p>
+
+</div>
+
+<div class="card">
+
+<h3>Payment Status</h3>
+
+<div id="paymentStatus"></div>
+
+</div>
+
+<div class="card">
+
+<h3>Application Status</h3>
+
+<div id="applicationStatus"></div>
+
+</div>
+
+<div class="card">
+  <button id="receiptBtn" disabled>
+    View Receipt
+  </button>
+</div>
+
+<div class="card">
+
+<h3>Payment Proof</h3>
+
+<a id="receiptLink" target="_blank">
+View Uploaded Receipt
+</a>
+
+</div>
+
+<div class="card">
+
+<button id="receiptBtn" style="display:none">
+View Official Receipt
+</button>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+
+async function loadDashboard(){
+
+const {data:{user}}=await supabaseClient.auth.getUser();
+
+if(!user){
+window.location.href="consultant-login.html";
+return;
+}
+
+const {data}=await supabaseClient
+.from("consultant_applications")
+.select("*")
+.eq("user_id",user.id)
+.single();
+
+document.getElementById("name").textContent=data.full_name;
+
+document.getElementById("position").textContent=
+`${data.selected_state} • Position ${data.position_number}`;
+
+document.getElementById("receiptLink").href=
+supabaseClient.storage
+.from("consultant-receipts")
+.getPublicUrl(data.payment_proof).data.publicUrl;
+
+if(data.payment_status==="approved"){
+document.getElementById("paymentStatus").innerHTML=
+'<span class="badge approved">APPROVED</span>';
+
+document.getElementById("receiptBtn").style.display="block";
+
+}else{
+
+if (data.application_status === "approved") {
+  document.getElementById("applicationStatus").innerHTML =
+    '<span class="badge approved">APPROVED</span>';
+
+  document.getElementById("receiptBtn").disabled = false;
+
+} else {
+  document.getElementById("applicationStatus").innerHTML =
+    '<span class="badge pending">UNDER REVIEW</span>';
+
+  document.getElementById("receiptBtn").disabled = true;
+}
+
+
+}
+
+}
+
+loadDashboard();
+
+document
+.getElementById("receiptBtn")
+.addEventListener("click",()=>{
+
+window.location.href="consultant-receipt.html";
+
+});
+
+</script>
+
+</body>
+</html>

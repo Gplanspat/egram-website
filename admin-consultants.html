@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>eGram Admin - Consultants</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<style>
+body{font-family:Arial;background:#f5f7fb;margin:20px}
+h2{color:#2563eb}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{padding:12px;border:1px solid #ddd;text-align:left}
+th{background:#2563eb;color:#fff}
+button{padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+.approve{background:#16a34a;color:white}
+.reject{background:#dc2626;color:white}
+.code{font-weight:bold;color:#2563eb}
+</style>
+</head>
+
+<body>
+
+<h2>eGram Consultant Management</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>State</th>
+<th>Position</th>
+<th>Status</th>
+<th>Consultant Code</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="consultantTable"></tbody>
+
+</table>
+
+<script>
+loadConsultants();
+
+async function loadConsultants(){
+
+const {data}=await supabaseClient
+.from("consultant_applications")
+.select("*")
+.order("created_at",{ascending:false});
+
+const table=document.getElementById("consultantTable");
+table.innerHTML="";
+
+data.forEach(c=>{
+
+table.innerHTML+=`
+<tr>
+<td>${c.full_name}</td>
+<td>${c.selected_state}</td>
+<td>${c.position_number}</td>
+<td>${c.application_status}</td>
+<td class="code">${c.consultant_code || "-"}</td>
+<td>
+${c.application_status==="approved"
+? "Approved"
+: `<button class="approve"
+onclick="approve('${c.id}','${c.selected_state}')">
+Approve
+</button>`
+}
+</td>
+</tr>
+`;
+
+});
+
+}
+
+async function approve(id,state){
+
+const code=
+"EGR-"+state.substring(0,3).toUpperCase()+"-"+
+Math.floor(100000+Math.random()*900000);
+
+await supabaseClient
+.from("consultant_applications")
+.update({
+application_status:"approved",
+consultant_code:code
+})
+.eq("id",id);
+
+alert("Consultant approved. Code: "+code);
+
+loadConsultants();
+
+}
+</script>
+
+</body>
+</html>
