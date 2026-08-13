@@ -116,8 +116,24 @@
         }
 
         .available {
-            color: #15803d;
-        }
+  color: #15803d;
+  font-weight: bold;
+}
+
+.held {
+  color: #ea580c;
+  font-weight: bold;
+}
+
+.occupied {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.7;
+}
 
         .back-link {
             display: inline-block;
@@ -1043,6 +1059,7 @@
   .from("consultant_positions")
   .select("id, state, position_number")
   .eq("state", stateName)
+  .eq("status", "available")
   .eq("position_number", positionNumber)
   .single();
 
@@ -1133,6 +1150,18 @@ position_number: selectedConsultantPosition.position_number,
         return;
     }
 
+    const { error: holdError } = await supabaseClient
+  .from("consultant_positions")
+  .update({
+    status: "held"
+  })
+  .eq("id", selectedConsultantPosition.position_id);
+
+if (holdError) {
+  alert(holdError.message);
+  return;
+}
+loadConsultantPositions();
    alert("Application saved successfully!");
 
 event.target.reset();
