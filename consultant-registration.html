@@ -1115,7 +1115,7 @@
         application_status: "pending"
     };
 
-    const { error } = await supabase
+    const { error } = await supabaseClient
         .from("consultant_applications")
         .insert([application]);
 
