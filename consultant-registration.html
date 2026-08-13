@@ -1227,6 +1227,10 @@ if (uploadError) {
   return;
 }
 
+const { data: urlData } = supabaseClient.storage
+  .from("consultant-receipts")
+  .getPublicUrl(fileName);
+
     if (!selectedConsultantPosition) {
         alert("Please select a consultant position first.");
         return;
@@ -1247,7 +1251,7 @@ if (uploadError) {
 position_number: selectedConsultantPosition.position_number,
 
 password: formData.get("password"),
-payment_proof: fileName,
+receipt_url: urlData.publicUrl,
 
 payment_status: "pending",
 application_status: "pending"
