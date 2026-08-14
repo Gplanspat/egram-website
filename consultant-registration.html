@@ -879,15 +879,11 @@
 
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 
 <script>
-    let selectedConsultantPosition = null;
-
-    const positionBoxes =
-        document.querySelectorAll(".position-box");
-        async function loadConsultantPositions() {
+async function loadConsultantPositions() {
   const { data, error } = await supabaseClient
     .from("consultant_positions")
     .select("*")
@@ -895,58 +891,56 @@
     .order("position_number");
 
   if (error) {
-    console.log(error);
+    console.error("Error fetching positions:", error);
     return;
   }
 
-  document.querySelectorAll(".state-section").forEach(section => {
+  document.querySelectorAll(".state-section").forEach((section) => {
     const state = section.querySelector("h3").textContent.trim();
     const boxes = section.querySelectorAll(".position-box");
 
     boxes.forEach((box, index) => {
       const position = data.find(
-        p => p.state === state && p.position_number === index + 1
+        (p) => p.state === state && p.position_number === index + 1
       );
 
       if (!position) return;
 
       const statusEl = box.querySelector(".position-status");
-      box.classList.remove("disabled");
+      const numberEl = box.querySelector(".position-number");
+      
+      box.classList.remove("disabled", "selected");
 
       if (position.status === "available") {
         statusEl.textContent = "AVAILABLE";
         statusEl.className = "position-status available";
+        numberEl.textContent = `Position ${position.position_number}`;
       } else if (position.status === "held") {
         statusEl.textContent = "HELD";
         statusEl.className = "position-status held";
+        numberEl.textContent = position.applicant_name || `Position ${position.position_number}`;
         box.classList.add("disabled");
-      } else {
+      } else if (position.status === "occupied") {
         statusEl.textContent = "OCCUPIED";
         statusEl.className = "position-status occupied";
+        numberEl.textContent = position.applicant_name || `Position ${position.position_number}`;
         box.classList.add("disabled");
       }
     });
   });
 }
 
-loadConsultantPositions();
-
- 
-
-
-   positionBoxes.forEach((box) => {
+// Attach click events to position boxes
+document.querySelectorAll(".position-box").forEach((box) => {
   box.addEventListener("click", async () => {
-
     if (box.classList.contains("disabled")) return;
 
-    const stateName = box.closest(".state-section")
-      .querySelector("h3").textContent.trim();
-
+    const stateName = box.closest(".state-section").querySelector("h3").textContent.trim();
     const positionNumber = Number(
-      box.querySelector(".position-number")
-        .textContent.replace("Position", "")
+      box.querySelector(".position-number").textContent.replace("Position ", "")
     );
 
+    // Verify availability in real-time
     const { data: position, error } = await supabaseClient
       .from("consultant_positions")
       .select("id")
@@ -956,124 +950,19 @@ loadConsultantPositions();
       .single();
 
     if (error || !position) {
-      alert("This position is no longer available.");
+      alert("This position has just been taken or is unavailable.");
       loadConsultantPositions();
       return;
     }
 
-    window.location.href =
-      `consultant-form.html?state=${encodeURIComponent(stateName)}&position=${positionNumber}`;
-
+    // Redirect to registration form with URL parameters
+    window.location.href = `consultant-form.html?state=${encodeURIComponent(stateName)}&position=${positionNumber}&position_id=${position.id}`;
   });
 });
 
-
-    // Change position
-    cancelRegistration.addEventListener("click", () => {
-
-        registrationFormSection.classList.remove("show");
-
-        selectedPositionBox.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-
-    });
-
-
-    document
-.getElementById("consultantRegistrationForm")
-.addEventListener("submit", async (event) => {
-
-    event.preventDefault();
-
-    const proof = document.getElementById("paymentProof").files[0];
-
-if (!proof) {
-  alert("Payment proof is required.");
-  return;
-}
-
-const fileName = `${Date.now()}-${proof.name}`;
-
-const { error: uploadError } = await supabaseClient.storage
-  .from("consultant-receipts")
-  .upload(fileName, proof);
-
-if (uploadError) {
-  alert(uploadError.message);
-  return;
-}
-
-const { data: urlData } = supabaseClient.storage
-  .from("consultant-receipts")
-  .getPublicUrl(fileName);
-
-    if (!selectedConsultantPosition) {
-        alert("Please select a consultant position first.");
-        return;
-    }
-
-    const formData = new FormData(event.target);
-
-    const application = {
-        full_name: formData.get("full_name"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        whatsapp: formData.get("whatsapp"),
-        occupation: formData.get("occupation"),
-        state_of_residence: formData.get("state_of_residence"),
-        address: formData.get("address"),
-        selected_state: formData.get("selected_state"),
-       position_id: selectedConsultantPosition.position_id,
-position_number: selectedConsultantPosition.position_number,
-
-password: formData.get("password"),
-receipt_url: urlData.publicUrl,
-
-payment_status: "pending",
-application_status: "pending"
-    };
-
-   const { data: authData, error: authError } =
-  await supabaseClient.auth.signUp({
-    email: application.email,
-    password: application.password
-  });
-
-if (authError) {
-  alert(authError.message);
-  return;
-}
-
-application.user_id = authData.user.id;
-
-const { error } = await supabaseClient
-  .from("consultant_applications")
-  .insert([application]);
-
-if (error) {
-  alert(error.message);
-  return;
-}
-
-    const { error: holdError } = await supabaseClient
-  .from("consultant_positions")
-  .update({
-    status: "held"
-  })
-  .eq("id", selectedConsultantPosition.position_id);
-
-if (holdError) {
-  alert(holdError.message);
-  return;
-}
+// Initial load
 loadConsultantPositions();
-
-window.location.href = "consultant-dashboard.html";
-});
 </script>
-
 
 <script>
 const password = document.getElementById("password");

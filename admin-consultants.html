@@ -1,103 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>eGram Admin - Consultants</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eGram Admin - Consultant Management</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f6f9; margin: 0; padding: 25px; color: #333; }
+    
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    h2 { color: #1e3a8a; margin: 0; }
+    
+    /* Stats Bar */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: #fff; padding: 18px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+    .stat-card h4 { margin: 0; color: #6b7280; font-size: 13px; text-transform: uppercase; }
+    .stat-card .number { font-size: 24px; font-weight: bold; color: #1e293b; margin-top: 5px; }
+    
+    /* Controls Bar */
+    .controls-bar { display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .search-box { flex: 1; min-width: 250px; }
+    .search-box input { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+    .filter-box select { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; background: #fff; }
 
-<style>
-body{font-family:Arial;background:#f5f7fb;margin:20px}
-h2{color:#2563eb}
-table{width:100%;border-collapse:collapse;background:#fff}
-th,td{padding:12px;border:1px solid #ddd;text-align:left}
-th{background:#2563eb;color:#fff}
-button{padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
-.approve{background:#16a34a;color:white}
-.reject{background:#dc2626;color:white}
-.code{font-weight:bold;color:#2563eb}
-</style>
+    /* Table Styling */
+    .table-container { background: #fff; border-radius: 10px; overflow-x: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+    th { background: #1e3a8a; color: #fff; padding: 14px; font-weight: 600; white-space: nowrap; }
+    td { padding: 12px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+    tr:hover { background-color: #f8fafc; }
+
+    /* Status Badges */
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-block; }
+    .badge-approved { background: #dcfce7; color: #15803d; }
+    .badge-pending { background: #fef9c3; color: #a16207; }
+    .badge-rejected { background: #fee2e2; color: #b91c1c; }
+
+    .code { font-weight: bold; color: #2563eb; font-family: monospace; font-size: 13px; }
+    .receipt-link { color: #2563eb; text-decoration: none; font-weight: 600; }
+    .receipt-link:hover { text-decoration: underline; }
+
+    /* Actions */
+    .action-btns { display: flex; gap: 6px; flex-wrap: nowrap; }
+    button { padding: 6px 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; transition: 0.2s; }
+    .btn-approve { background: #16a34a; color: white; }
+    .btn-approve:hover { background: #15803d; }
+    .btn-reject { background: #dc2626; color: white; }
+    .btn-reject:hover { background: #b91c1c; }
+    .btn-delete { background: #6b7280; color: white; }
+    .btn-delete:hover { background: #374151; }
+
+    .contact-sub { font-size: 12px; color: #6b7280; display: block; margin-top: 2px; }
+  </style>
 </head>
-
 <body>
 
-<h2>eGram Consultant Management</h2>
+  <header>
+    <h2>eGram Consultant Management</h2>
+    <button onclick="loadConsultants()" style="background:#2563eb; color:white; padding:10px 16px; border-radius:6px;">↻ Refresh Data</button>
+  </header>
 
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>State</th>
-<th>Position</th>
-<th>Status</th>
-<th>Consultant Code</th>
-<th>Action</th>
-</tr>
-</thead>
+  <!-- Summary Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h4>Total Applications</h4>
+      <div class="number" id="statTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <h4>Approved</h4>
+      <div class="number" id="statApproved" style="color:#16a34a;">0</div>
+    </div>
+    <div class="stat-card">
+      <h4>Pending Review</h4>
+      <div class="number" id="statPending" style="color:#d97706;">0</div>
+    </div>
+    <div class="stat-card">
+      <h4>Verified Revenue</h4>
+      <div class="number" id="statRevenue" style="color:#2563eb;">₦0</div>
+    </div>
+  </div>
 
-<tbody id="consultantTable"></tbody>
+  <!-- Filters -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by Applicant Name, Email, or State..." onkeyup="filterData()">
+    </div>
+    <div class="filter-box">
+      <select id="statusFilter" onchange="filterData()">
+        <option value="ALL">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+  </div>
 
-</table>
+  <!-- Data Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Applicant Info</th>
+          <th>Contact</th>
+          <th>Selected Position</th>
+          <th>Proof of Payment</th>
+          <th>Status</th>
+          <th>Consultant Code</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="consultantTable">
+        <tr><td colspan="7" style="text-align:center; padding:20px;">Loading consultant data...</td></tr>
+      </tbody>
+    </table>
+  </div>
 
-<script>
-loadConsultants();
+  <script>
+    let allConsultants = [];
 
-async function loadConsultants(){
+    async function loadConsultants() {
+      const { data, error } = await supabaseClient
+        .from("consultant_applications")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-const {data}=await supabaseClient
-.from("consultant_applications")
-.select("*")
-.order("created_at",{ascending:false});
+      if (error) {
+        alert("Failed to load records: " + error.message);
+        return;
+      }
 
-const table=document.getElementById("consultantTable");
-table.innerHTML="";
+      allConsultants = data || [];
+      updateStats();
+      renderTable(allConsultants);
+    }
 
-data.forEach(c=>{
+    function updateStats() {
+      const total = allConsultants.length;
+      const approved = allConsultants.filter(c => c.application_status === 'approved').length;
+      const pending = allConsultants.filter(c => c.application_status === 'pending').length;
+      const revenue = approved * 250000;
 
-table.innerHTML+=`
-<tr>
-<td>${c.full_name}</td>
-<td>${c.selected_state}</td>
-<td>${c.position_number}</td>
-<td>${c.application_status}</td>
-<td class="code">${c.consultant_code || "-"}</td>
-<td>
-${c.application_status==="approved"
-? "Approved"
-: `<button class="approve"
-onclick="approve('${c.id}','${c.selected_state}')">
-Approve
-</button>`
-}
-</td>
-</tr>
-`;
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statApproved").textContent = approved;
+      document.getElementById("statPending").textContent = pending;
+      document.getElementById("statRevenue").textContent = "₦" + revenue.toLocaleString();
+    }
 
-});
+    function renderTable(data) {
+      const table = document.getElementById("consultantTable");
+      table.innerHTML = "";
 
-}
+      if (data.length === 0) {
+        table.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#6b7280;">No records found.</td></tr>`;
+        return;
+      }
 
-async function approve(id,state){
+      data.forEach(c => {
+        const statusClass = c.application_status === 'approved' 
+          ? 'badge-approved' 
+          : (c.application_status === 'rejected' ? 'badge-rejected' : 'badge-pending');
 
-const code=
-"EGR-"+state.substring(0,3).toUpperCase()+"-"+
-Math.floor(100000+Math.random()*900000);
+        const receiptLink = c.payment_proof 
+          ? `<a href="${c.payment_proof}" target="_blank" class="receipt-link">📄 View Receipt</a>` 
+          : `<span style="color:#9ca3af;">No proof</span>`;
 
-await supabaseClient
-.from("consultant_applications")
-.update({
-application_status:"approved",
-consultant_code:code
-})
-.eq("id",id);
+        table.innerHTML += `
+          <tr>
+            <td>
+              <strong>${c.full_name || 'N/A'}</strong>
+              <span class="contact-sub">${c.occupation || 'N/A'} • ${c.state_of_residence || 'N/A'}</span>
+            </td>
+            <td>
+              ${c.email || 'N/A'}
+              <span class="contact-sub">📞 ${c.phone || 'N/A'} | WA: ${c.whatsapp || 'N/A'}</span>
+            </td>
+            <td>
+              <strong>${c.selected_state}</strong>
+              <span class="contact-sub">Position #${c.position_number}</span>
+            </td>
+            <td>${receiptLink}</td>
+            <td>
+              <span class="badge ${statusClass}">${c.application_status || 'pending'}</span>
+            </td>
+            <td class="code">${c.consultant_code || "-"}</td>
+            <td>
+              <div class="action-btns">
+                ${c.application_status !== "approved" ? `
+                  <button class="btn-approve" onclick="approve('${c.id}', '${c.selected_state}', ${c.position_number}, '${c.full_name}')">
+                    Approve
+                  </button>
+                ` : ''}
 
-alert("Consultant approved. Code: "+code);
+                ${c.application_status !== "rejected" ? `
+                  <button class="btn-reject" onclick="reject('${c.id}', '${c.selected_state}', ${c.position_number})">
+                    Reject
+                  </button>
+                ` : ''}
 
-loadConsultants();
+                <button class="btn-delete" onclick="deleteRecord('${c.id}', '${c.selected_state}', ${c.position_number})">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
 
-}
-</script>
+    function filterData() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const status = document.getElementById("statusFilter").value;
 
+      const filtered = allConsultants.filter(c => {
+        const matchesSearch = 
+          (c.full_name && c.full_name.toLowerCase().includes(search)) ||
+          (c.email && c.email.toLowerCase().includes(search)) ||
+          (c.selected_state && c.selected_state.toLowerCase().includes(search));
+
+        const matchesStatus = status === "ALL" || c.application_status === status;
+
+        return matchesSearch && matchesStatus;
+      });
+
+      renderTable(filtered);
+    }
+
+    async function approve(id, state, positionNumber, applicantName) {
+      if (!confirm("Approve this consultant application? This will generate their referral code and lock the position.")) return;
+
+      const generatedCode = "egram-" + state.substring(0, 3).toLowerCase() + "-" + Math.random().toString(36).substring(2, 7);
+
+      // 1. Approve Application
+      const { error: appError } = await supabaseClient
+        .from("consultant_applications")
+        .update({
+          application_status: "approved",
+          payment_status: "approved",
+          consultant_code: generatedCode
+        })
+        .eq("id", id);
+
+      if (appError) {
+        alert("Error approving application: " + appError.message);
+        return;
+      }
+
+      // 2. Lock Position Box to Occupied
+      await supabaseClient
+        .from("consultant_positions")
+        .update({
+          status: "occupied",
+          applicant_name: applicantName
+        })
+        .eq("state", state)
+        .eq("position_number", positionNumber);
+
+      alert(`Consultant approved successfully!\nGenerated Code: ${generatedCode}`);
+      loadConsultants();
+    }
+
+    async function reject(id, state, positionNumber) {
+      if (!confirm("Reject this application? This will reopen the position box back to AVAILABLE.")) return;
+
+      // 1. Mark Application as Rejected
+      const { error: appError } = await supabaseClient
+        .from("consultant_applications")
+        .update({
+          application_status: "rejected",
+          payment_status: "rejected"
+        })
+        .eq("id", id);
+
+      if (appError) {
+        alert("Error rejecting application: " + appError.message);
+        return;
+      }
+
+      // 2. Free up position box back to Available
+      await supabaseClient
+        .from("consultant_positions")
+        .update({
+          status: "available",
+          applicant_name: null
+        })
+        .eq("state", state)
+        .eq("position_number", positionNumber);
+
+      alert("Application rejected and position freed up.");
+      loadConsultants();
+    }
+
+    async function deleteRecord(id, state, positionNumber) {
+      if (!confirm("Are you sure you want to permanently delete this application record?")) return;
+
+      const { error } = await supabaseClient
+        .from("consultant_applications")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        alert("Error deleting record: " + error.message);
+        return;
+      }
+
+      // Free up position box
+      await supabaseClient
+        .from("consultant_positions")
+        .update({
+          status: "available",
+          applicant_name: null
+        })
+        .eq("state", state)
+        .eq("position_number", positionNumber);
+
+      alert("Record deleted.");
+      loadConsultants();
+    }
+
+    // Load data on start
+    loadConsultants();
+  </script>
 </body>
 </html>

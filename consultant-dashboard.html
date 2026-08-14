@@ -118,66 +118,68 @@ View Official Receipt
 
 <script>
 
-async function loadDashboard(){
+async function loadDashboard() {
+  const { data: { user } } = await supabaseClient.auth.getUser();
 
-const {data:{user}}=await supabaseClient.auth.getUser();
+  if (!user) {
+    window.location.href = "consultant-login.html";
+    return;
+  }
 
-if(!user){
-window.location.href="consultant-login.html";
-return;
-}
+  const { data, error } = await supabaseClient
+    .from("consultant_applications")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
 
-const {data}=await supabaseClient
-.from("consultant_applications")
-.select("*")
-.eq("user_id",user.id)
-.single();
+  if (error || !data) {
+    console.error("Error loading application:", error);
+    return;
+  }
 
-document.getElementById("name").textContent=data.full_name;
+  document.getElementById("name").textContent = data.full_name;
+  document.getElementById("position").textContent = `${data.selected_state} • Position ${data.position_number}`;
 
-document.getElementById("position").textContent=
-`${data.selected_state} • Position ${data.position_number}`;
+  // Receipt Link
+  if (data.payment_proof) {
+    document.getElementById("receiptLink").href = data.payment_proof;
+  }
 
-document.getElementById("receiptLink").href=
-supabaseClient.storage
-.from("consultant-receipts")
-.getPublicUrl(data.payment_proof).data.publicUrl;
+  // Application & Payment Status Display
+  const appStatusEl = document.getElementById("applicationStatus");
+  const payStatusEl = document.getElementById("paymentStatus");
 
-if(data.payment_status==="approved"){
-document.getElementById("paymentStatus").innerHTML=
-'<span class="badge approved">APPROVED</span>';
+  if (data.application_status === "approved") {
+    appStatusEl.innerHTML = `
+      <span class="badge approved">APPROVED</span>
+      <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;">
+        <strong style="color: #166534;">Your Consultant Referral Code:</strong>
+        <div style="font-size: 20px; font-weight: bold; color: #15803d; letter-spacing: 1px; margin-top: 4px;">
+          ${data.consultant_code || 'Generating...'}
+        </div>
+        <small style="color: #4b5563;">Use this code when registering schools to earn your subscription commissions.</small>
+      </div>
+    `;
+    document.getElementById("receiptBtn").style.display = "block";
+    document.getElementById("receiptBtn").disabled = false;
+  } else {
+    appStatusEl.innerHTML = '<span class="badge pending">UNDER REVIEW</span>';
+    document.getElementById("receiptBtn").disabled = true;
+  }
 
-document.getElementById("receiptBtn").style.display="block";
-
-}else{
-
-if (data.application_status === "approved") {
-  document.getElementById("applicationStatus").innerHTML =
-    '<span class="badge approved">APPROVED</span>';
-
-  document.getElementById("receiptBtn").disabled = false;
-
-} else {
-  document.getElementById("applicationStatus").innerHTML =
-    '<span class="badge pending">UNDER REVIEW</span>';
-
-  document.getElementById("receiptBtn").disabled = true;
-}
-
-
-}
-
+  if (data.payment_status === "approved") {
+    payStatusEl.innerHTML = '<span class="badge approved">PAYMENT VERIFIED</span>';
+  } else {
+    payStatusEl.innerHTML = '<span class="badge pending">PENDING VERIFICATION</span>';
+  }
 }
 
 loadDashboard();
 
-document
-.getElementById("receiptBtn")
-.addEventListener("click",()=>{
-
-window.location.href="consultant-receipt.html";
-
+document.getElementById("receiptBtn").addEventListener("click", () => {
+  window.location.href = "consultant-receipt.html";
 });
+
 
 </script>
 
