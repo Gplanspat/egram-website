@@ -116,48 +116,57 @@
         });
     }
 
-    async function loadConsultantPositions() {
-        const { data, error } = await supabaseClient
-            .from("consultant_positions")
-            .select("*");
+  async function loadConsultantPositions() {
+    const { data, error } = await supabaseClient
+        .from("consultant_positions")
+        .select("*");
 
-        if (error) {
-            console.error("Error fetching positions:", error);
-            return;
-        }
-
-        document.querySelectorAll(".state-section").forEach((section) => {
-            const state = section.dataset.state;
-            const boxes = section.querySelectorAll(".position-box");
-
-            boxes.forEach((box) => {
-                const posNum = parseInt(box.dataset.pos);
-                const position = data.find(p => p.state === state && parseInt(p.position_number) === posNum);
-
-                const statusEl = box.querySelector(".position-status");
-                const numberEl = box.querySelector(".position-number");
-
-                if (!position) return;
-
-                box.dataset.positionId = position.id;
-                box.dataset.status = position.status;
-
-                if (position.status === "available") {
-                    statusEl.textContent = "AVAILABLE";
-                    statusEl.className = "position-status available";
-                    numberEl.textContent = `Position ${position.position_number}`;
-                } else if (position.status === "held") {
-                    statusEl.textContent = "HELD";
-                    statusEl.className = "position-status held";
-                    numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
-                } else if (position.status === "occupied") {
-                    statusEl.textContent = "OCCUPIED";
-                    statusEl.className = "position-status occupied";
-                    numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
-                }
-            });
-        });
+    if (error) {
+        console.error("Error fetching positions:", error);
+        return;
     }
+
+    document.querySelectorAll(".state-section").forEach((section) => {
+        const state = section.dataset.state;
+        const boxes = section.querySelectorAll(".position-box");
+
+        boxes.forEach((box) => {
+            const posNum = parseInt(box.dataset.pos);
+            
+            // Match both "FCT Abuja" and "Federal Capital Territory"
+            const position = data.find(p => {
+                const dbState = p.state.trim().toLowerCase();
+                const UIState = state.trim().toLowerCase();
+                const isFCT = (dbState.includes("fct") || dbState.includes("federal capital")) && 
+                              (UIState.includes("fct") || UIState.includes("federal capital"));
+                
+                return (dbState === UIState || isFCT) && parseInt(p.position_number) === posNum;
+            });
+
+            const statusEl = box.querySelector(".position-status");
+            const numberEl = box.querySelector(".position-number");
+
+            if (!position) return;
+
+            box.dataset.positionId = position.id;
+            box.dataset.status = position.status;
+
+            if (position.status === "available") {
+                statusEl.textContent = "AVAILABLE";
+                statusEl.className = "position-status available";
+                numberEl.textContent = `Position ${position.position_number}`;
+            } else if (position.status === "held") {
+                statusEl.textContent = "HELD";
+                statusEl.className = "position-status held";
+                numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
+            } else if (position.status === "occupied") {
+                statusEl.textContent = "OCCUPIED";
+                statusEl.className = "position-status occupied";
+                numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
+            }
+        });
+    });
+}
 
     // Handle Clicks on Position Boxes
     document.addEventListener("click", async (e) => {

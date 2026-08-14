@@ -142,9 +142,15 @@ async function loadDashboard() {
 
   // Receipt Link
 if (data.payment_proof) {
-  const receiptUrl = data.payment_proof.startsWith("http")
-    ? data.payment_proof
-    : `https://gqkrchcgyggskgiojtvf.supabase.co/storage/v1/object/public/consultant-receipts/${data.payment_proof}`;
+  let receiptUrl = data.payment_proof;
+  
+  if (!data.payment_proof.startsWith("http")) {
+    const { data: publicData } = supabaseClient.storage
+      .from('consultant-receipts')
+      .getPublicUrl(data.payment_proof);
+      
+    receiptUrl = publicData.publicUrl;
+  }
 
   document.getElementById("receiptLink").href = receiptUrl;
 }

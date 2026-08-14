@@ -164,9 +164,20 @@
           ? 'badge-approved' 
           : (c.application_status === 'rejected' ? 'badge-rejected' : 'badge-pending');
 
-       const receiptUrl = c.payment_proof?.startsWith("http")
-  ? c.payment_proof
-  : `https://gqkrchcgyggskgiojtvf.supabase.co/storage/v1/object/public/consultant-receipts/${c.payment_proof}`;
+      let receiptUrl = '#';
+
+if (c.payment_proof) {
+  if (c.payment_proof.startsWith("http")) {
+    receiptUrl = c.payment_proof;
+  } else {
+    // Uses official Supabase helper
+    const { data } = supabaseClient.storage
+      .from('consultant-receipts')
+      .getPublicUrl(c.payment_proof);
+    
+    receiptUrl = data.publicUrl;
+  }
+}
 
 const receiptLink = c.payment_proof
   ? `<a href="${receiptUrl}" target="_blank" class="receipt-link">View Receipt</a>`
