@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Consultant Registration Form</title>
+
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+</head>
+
+<body>
+
+<div class="consultant-container">
+
+<a href="consultant-registration.html">← Back to Positions</a>
+
+<h1>Consultant Registration</h1>
+
+<div class="selected-position-summary">
+Selected Position
+
+<strong id="selectedPosition"></strong>
+</div>
+
+<form id="consultantRegistrationForm" enctype="multipart/form-data">
+
+<input type="hidden" id="selectedState" name="selected_state">
+
+<input type="hidden" id="selectedPositionNumber" name="position_number">
+
+<input type="text" name="full_name" placeholder="Full Name" required>
+
+<input type="email" name="email" placeholder="Email" required>
+
+<input type="tel" name="phone" placeholder="Phone" required>
+
+<input type="tel" name="whatsapp" placeholder="WhatsApp">
+
+<input type="text" name="occupation" placeholder="Occupation" required>
+
+<select name="state_of_residence" required>
+<option value="">State of Residence</option>
+<option>Lagos</option>
+<option>Abia</option>
+<option>Adamawa</option>
+<!-- Add remaining states -->
+</select>
+
+<textarea name="address" placeholder="Residential Address" required></textarea>
+
+<div class="password-box">
+<input type="password" id="password" name="password" placeholder="Create Password" required>
+<span id="togglePassword">👁️</span>
+</div>
+
+<label class="upload-btn" for="paymentProof">
+Upload Payment Receipt
+</label>
+
+<input type="file" id="paymentProof" accept="image/*,.pdf" required hidden>
+
+<span id="fileName">No file selected</span>
+
+<div class="selected-position-summary">
+**Bank:** Moniepoint MFB
+
+**Account Name:** Spatcan Development Company Limited
+
+**Account Number:** 4005624798
+
+**Amount:** ₦250,000
+</div>
+
+<button type="submit">Submit Registration</button>
+
+</form>
+
+</div>
+
+<script>
+const params=new URLSearchParams(window.location.search);
+
+const state=params.get("state");
+
+const position=params.get("position");
+
+document.getElementById("selectedPosition").textContent=
+`${state} — Position ${position}`;
+
+document.getElementById("selectedState").value=state;
+
+document.getElementById("selectedPositionNumber").value=position;
+
+// eye
+const password=document.getElementById("password");
+
+const toggle=document.getElementById("togglePassword");
+
+toggle.onclick=()=>{
+if(password.type==="password"){
+password.type="text";
+toggle.textContent="🙈";
+}else{
+password.type="password";
+toggle.textContent="👁️";
+}
+};
+
+// upload
+const paymentInput=document.getElementById("paymentProof");
+
+const fileName=document.getElementById("fileName");
+
+paymentInput.onchange=()=>{
+fileName.textContent=
+paymentInput.files.length?
+paymentInput.files[0].name:
+"No file selected";
+};
+</script>
+
+</body>
+</html>

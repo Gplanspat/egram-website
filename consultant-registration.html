@@ -423,202 +423,7 @@
                     Nigeria's 36 states and the Federal Capital Territory.
                 </span>
             </div>
-            <div id="selectedPosition" class="selected-position">
-    <div class="selected-position-title">
-        Selected Consultant Position
-    </div>
-
-    <div id="selectedPositionValue" class="selected-position-value">
-    </div>
-</div>
-
-<div id="registrationFormSection" class="registration-form-section">
-
-    <div class="registration-form-header">
-        <h2>Consultant Registration</h2>
-        <p>Complete your details to continue your consultant application.</p>
-    </div>
-
-    <div class="selected-position-summary">
-        Selected Consultant Position
-        <strong id="formSelectedPosition"></strong>
-    </div>
-
-   <form id="consultantRegistrationForm" enctype="multipart/form-data">
-
-        <div class="form-grid">
-
-            <div class="form-group">
-                <label for="fullName">Full Name *</label>
-                <input
-                    type="text"
-                    id="fullName"
-                    name="full_name"
-                    placeholder="Enter your full name"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email Address *</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email address"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="phone">Phone Number *</label>
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    placeholder="08012345678"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="whatsapp">WhatsApp Number</label>
-                <input
-                    type="tel"
-                    id="whatsapp"
-                    name="whatsapp"
-                    placeholder="WhatsApp number"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="occupation">Occupation *</label>
-                <input
-                    type="text"
-                    id="occupation"
-                    name="occupation"
-                    placeholder="Your occupation"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="stateOfResidence">State of Residence *</label>
-                <select id="stateOfResidence" name="state_of_residence" required>
-                    <option value="">Select your state</option>
-                    <option>Abia</option>
-                    <option>Adamawa</option>
-                    <option>Akwa Ibom</option>
-                    <option>Anambra</option>
-                    <option>Bauchi</option>
-                    <option>Bayelsa</option>
-                    <option>Benue</option>
-                    <option>Borno</option>
-                    <option>Cross River</option>
-                    <option>Delta</option>
-                    <option>Ebonyi</option>
-                    <option>Edo</option>
-                    <option>Ekiti</option>
-                    <option>Enugu</option>
-                    <option>Gombe</option>
-                    <option>Imo</option>
-                    <option>Jigawa</option>
-                    <option>Kaduna</option>
-                    <option>Kano</option>
-                    <option>Katsina</option>
-                    <option>Kebbi</option>
-                    <option>Kogi</option>
-                    <option>Kwara</option>
-                    <option>Lagos</option>
-                    <option>Nasarawa</option>
-                    <option>Niger</option>
-                    <option>Ogun</option>
-                    <option>Ondo</option>
-                    <option>Osun</option>
-                    <option>Oyo</option>
-                    <option>Plateau</option>
-                    <option>Rivers</option>
-                    <option>Sokoto</option>
-                    <option>Taraba</option>
-                    <option>Yobe</option>
-                    <option>Zamfara</option>
-                    <option>Federal Capital Territory (FCT) Abuja</option>
-                </select>
-            </div>
-
-            <div class="form-group full-width">
-                <label for="address">Residential Address *</label>
-                <textarea
-                    id="address"
-                    name="address"
-                    placeholder="Enter your residential address"
-                    required
-                ></textarea>
-            </div>
-
-        </div>
-
-        <input type="hidden" id="selectedState" name="selected_state">
-        <input type="hidden" id="selectedPositionNumber" name="position_number">
-
-        <div class="form-group">
-  <label for="password">Create Password *</label>
-<div class="password-box">
-  <input
-    type="password"
-    id="password"
-    name="password"
-    placeholder="Create a password"
-    required
-  >
-  <span id="togglePassword">👁️</span>
-</div>
-</div>
-
-<div class="form-group full-width">
- <label for="paymentProof" class="upload-btn">
-  Upload Payment Receipt
-</label>
-
-<input
-  type="file"
-  id="paymentProof"
-  accept="image/*,.pdf"
-  required
-  style="display:none"
->
-
-<span id="fileName" style="display:block;margin-top:8px;color:#2563eb;">
-  No file selected
-</span>
-  <small>
-    Upload your bank transfer receipt (JPG, PNG or PDF)
-  </small>
-</div>
-
-<div class="selected-position-summary">
-  **Bank:** Moniepoint MFB
-
-  **Account Name:** Spatcan Development Company Limited
-
-  **Account Number:** 4005624798
-
-  **Amount:** ₦250,000
-</div>
-
-        <button type="submit" class="form-submit">
-            Submit Your Registration
-        </button>
-
-        <div
-            id="cancelRegistration"
-            class="cancel-registration"
-        >
-            ← Change Consultant Position
-        </div>
-
-    </form>
-</div>
+          
 
             <div class="states-list">
 
@@ -1126,71 +931,40 @@
 
 loadConsultantPositions();
 
-    const selectedPositionBox =
-        document.getElementById("selectedPosition");
-
-    const selectedPositionValue =
-        document.getElementById("selectedPositionValue");
-
-    const registrationFormSection =
-        document.getElementById("registrationFormSection");
-
-    const formSelectedPosition =
-        document.getElementById("formSelectedPosition");
-
-    const selectedState =
-        document.getElementById("selectedState");
-
-    const selectedPositionNumber =
-        document.getElementById("selectedPositionNumber");
-
-    const cancelRegistration =
-        document.getElementById("cancelRegistration");
+ 
 
 
-    positionBoxes.forEach((box) => {
+   positionBoxes.forEach((box) => {
+  box.addEventListener("click", async () => {
 
-      box.addEventListener("click", async () => {
-  if (box.classList.contains("disabled")) return;
+    if (box.classList.contains("disabled")) return;
 
-  positionBoxes.forEach(item => item.classList.remove("selected"));
-  box.classList.add("selected");
+    const stateName = box.closest(".state-section")
+      .querySelector("h3").textContent.trim();
 
-  const stateName = box.closest(".state-section")
-    .querySelector("h3").textContent.trim();
+    const positionNumber = Number(
+      box.querySelector(".position-number")
+        .textContent.replace("Position", "")
+    );
 
-  const positionNumber = Number(
-    box.querySelector(".position-number").textContent.replace("Position", "")
-  );
+    const { data: position, error } = await supabaseClient
+      .from("consultant_positions")
+      .select("id")
+      .eq("state", stateName)
+      .eq("position_number", positionNumber)
+      .eq("status", "available")
+      .single();
 
-  const { data: position, error } = await supabaseClient
-    .from("consultant_positions")
-    .select("id,state,position_number")
-    .eq("state", stateName)
-    .eq("position_number", positionNumber)
-    .eq("status", "available")
-    .single();
+    if (error || !position) {
+      alert("This position is no longer available.");
+      loadConsultantPositions();
+      return;
+    }
 
-  if (error || !position) {
-    alert("This position is no longer available.");
-    loadConsultantPositions();
-    return;
-  }
+    window.location.href =
+      `consultant-form.html?state=${encodeURIComponent(stateName)}&position=${positionNumber}`;
 
-  selectedConsultantPosition = {
-    position_id: position.id,
-    state: position.state,
-    position_number: position.position_number
-  };
-
-  selectedPositionValue.textContent = `${stateName} — Position ${positionNumber}`;
-  selectedPositionBox.classList.add("show");
-  formSelectedPosition.textContent = `${stateName} — Position ${positionNumber}`;
-  selectedState.value = stateName;
-  selectedPositionNumber.value = positionNumber;
-  registrationFormSection.classList.add("show");
-});
-
+  });
 });
 
 
