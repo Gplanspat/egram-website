@@ -3,993 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta
-        name="description"
-        content="eGram Consultant Registration - Select an available consultant position."
-    >
-
     <title>Register as Consultant | eGram</title>
-
     <link rel="stylesheet" href="styles.css">
-
     <style>
-        .consultant-page {
-            min-height: 100vh;
-            padding: 50px 20px 80px;
-            background: #f7f9fc;
-        }
+        .consultant-page { min-height: 100vh; padding: 50px 20px 80px; background: #f7f9fc; }
+        .consultant-container { max-width: 1200px; margin: 0 auto; }
+        .consultant-header { text-align: center; margin-bottom: 40px; }
+        .consultant-header h1 { margin-bottom: 12px; font-size: 36px; }
+        .consultant-header p { color: #666; font-size: 17px; margin: 0 auto; max-width: 700px; }
+        .registration-note { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 35px; border: 1px solid #e5e7eb; text-align: center; }
+        .registration-note strong { display: block; font-size: 20px; margin-bottom: 8px; }
+        .state-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+        .state-section h3 { margin: 0 0 15px; font-size: 20px; color: #111827; }
+        .position-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; width: 100%; }
+        .position-box { min-height: 90px; border: 2px solid #d8dee8; border-radius: 10px; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; text-align: center; padding: 10px; }
+        .position-box:hover { transform: translateY(-2px); border-color: #2563eb; box-shadow: 0 5px 15px rgba(37, 99, 235, 0.12); }
+        .position-status { font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+        .position-number { font-size: 12px; color: #4b5563; word-break: break-word; }
+        .available { color: #15803d; }
+        .held { color: #ea580c; }
+        .occupied { color: #dc2626; }
+        .back-link { display: inline-block; margin-bottom: 25px; text-decoration: none; font-weight: 600; color: #2563eb; }
 
-        .consultant-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        /* Login Modal Styling */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: #fff; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; }
+        .modal-card h2 { margin-top: 0; font-size: 22px; color: #111827; }
+        .modal-card .close-btn { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; color: #6b7280; }
+        .modal-card .form-group { margin-bottom: 15px; }
+        .modal-card label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+        .modal-card input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; }
+        .modal-card button { width: 100%; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        .consultant-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .consultant-header h1 {
-            margin-bottom: 12px;
-            font-size: 36px;
-        }
-
-        .consultant-header p {
-            color: #666;
-            font-size: 17px;
-            margin: 0 auto;
-            max-width: 700px;
-        }
-
-        .registration-note {
-            background: #fff;
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 35px;
-            border: 1px solid #e5e7eb;
-            text-align: center;
-        }
-
-        .registration-note strong {
-            display: block;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .states-list {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .state-row {
-            background: #ffffff;
-            border: 1px solid #e1e5ea;
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
-        }
-
-        .state-name {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .positions {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-        }
-
-        .position-box {
-            min-height: 90px;
-            border: 2px solid #d8dee8;
-            border-radius: 10px;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .position-box:hover {
-            transform: translateY(-2px);
-            border-color: #2563eb;
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.12);
-        }
-
-        .position-status {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .position-number {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .available {
-  color: #15803d;
-  font-weight: bold;
-}
-
-.held {
-  color: #ea580c;
-  font-weight: bold;
-}
-
-.occupied {
-  color: #dc2626;
-  font-weight: bold;
-}
-
-.disabled {
-  pointer-events: none;
-  opacity: 0.7;
-}
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 25px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (max-width: 700px) {
-            .consultant-page {
-                padding: 30px 12px 60px;
-            }
-
-            .consultant-header h1 {
-                font-size: 28px;
-            }
-
-            .positions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .state-row {
-                padding: 15px;
-            }
-        }
-        .position-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    width: 100%;
-}
-
-.position-box {
-    min-height: 90px;
-    border: 2px solid #d8dee8;
-    border-radius: 10px;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    padding: 10px;
-}
-/* Selected consultant position */
-.position-box.selected {
-    border-color: #2563eb;
-    background: #eff6ff;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    transform: translateY(-2px);
-}
-
-.position-box.selected .position-status {
-    color: #2563eb;
-}
-
-.selected-position {
-    display: none;
-    margin: 0 auto 30px;
-    max-width: 700px;
-    background: #eff6ff;
-    border: 1px solid #93c5fd;
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-}
-
-.selected-position.show {
-    display: block;
-}
-
-.selected-position-title {
-    font-size: 14px;
-    color: #64748b;
-    margin-bottom: 6px;
-}
-
-.selected-position-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1d4ed8;
-}
-
-/* Consultant registration form */
-.registration-form-section {
-    display: none;
-    max-width: 800px;
-    margin: 35px auto 0;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 30px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
-
-.registration-form-section.show {
-    display: block;
-}
-
-.registration-form-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.registration-form-header h2 {
-    margin: 0 0 8px;
-    font-size: 28px;
-}
-
-.registration-form-header p {
-    margin: 0;
-    color: #64748b;
-}
-
-.selected-position-summary {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 25px;
-    text-align: center;
-}
-
-.selected-position-summary strong {
-    display: block;
-    color: #1d4ed8;
-    font-size: 18px;
-    margin-top: 5px;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-group.full-width {
-    grid-column: 1 / -1;
-}
-
-.form-group label {
-    font-weight: 600;
-    margin-bottom: 7px;
-    color: #1f2937;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 9px;
-    font-size: 15px;
-    outline: none;
-    background: #fff;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.form-submit {
-    margin-top: 25px;
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background: #2563eb;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.form-submit:hover {
-    background: #1d4ed8;
-}
-
-.cancel-registration {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #64748b;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-@media (max-width: 700px) {
-    .registration-form-section {
-        padding: 22px 16px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .form-group.full-width {
-        grid-column: auto;
-    }
-}
-.password-box{
-  position:relative;
-}
-.password-box input{
-  width:100%;
-  padding-right:45px;
-  box-sizing:border-box;
-}
-#togglePassword{
-  position:absolute;
-  right:15px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:18px;
-}
-
-.state-section{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:18px;
-}
-
-.state-section h3{
-  margin:0 0 15px;
-  font-size:20px;
-  color:#111827;
-}
-
-.upload-btn{
-  display:block;
-  padding:14px;
-  border:1px solid #d1d5db;
-  border-radius:10px;
-  background:#f8fafc;
-  cursor:pointer;
-  text-align:center;
-  font-weight:600;
-}
-
+        @media (max-width: 700px) { .position-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
-
 <body>
 
     <main class="consultant-page">
-
         <div class="consultant-container">
-
-            <a href="index.html" class="back-link">
-                ← Back to eGram
-            </a>
+            <a href="index.html" class="back-link">← Back to eGram</a>
 
             <div class="consultant-header">
                 <h1>Register as a Consultant</h1>
-
-                <p>
-                    Select an available consultant position in your preferred
-                    state to begin your registration.
-                </p>
+                <p>Select an available consultant position in your preferred state to begin your registration.</p>
             </div>
 
             <div class="registration-note">
                 <strong>185 Consultant Positions Available</strong>
-
-                <span>
-                    There are 5 consultant positions available in each of
-                    Nigeria's 36 states and the Federal Capital Territory.
-                </span>
-            </div>
-          
-
-            <div class="states-list">
-
-                   <!-- Abia -->
-    <div class="state-section">
-        <h3>Abia</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Adamawa -->
-    <div class="state-section">
-        <h3>Adamawa</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Akwa Ibom -->
-    <div class="state-section">
-        <h3>Akwa Ibom</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Anambra -->
-    <div class="state-section">
-        <h3>Anambra</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Bauchi -->
-    <div class="state-section">
-        <h3>Bauchi</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Bayelsa -->
-    <div class="state-section">
-        <h3>Bayelsa</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Benue -->
-    <div class="state-section">
-        <h3>Benue</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Borno -->
-    <div class="state-section">
-        <h3>Borno</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Cross River -->
-    <div class="state-section">
-        <h3>Cross River</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Delta -->
-    <div class="state-section">
-        <h3>Delta</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Ebonyi -->
-    <div class="state-section">
-        <h3>Ebonyi</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Edo -->
-    <div class="state-section">
-        <h3>Edo</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Ekiti -->
-    <div class="state-section">
-        <h3>Ekiti</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Enugu -->
-    <div class="state-section">
-        <h3>Enugu</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Gombe -->
-    <div class="state-section">
-        <h3>Gombe</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Imo -->
-    <div class="state-section">
-        <h3>Imo</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Jigawa -->
-    <div class="state-section">
-        <h3>Jigawa</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Kaduna -->
-    <div class="state-section">
-        <h3>Kaduna</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Kano -->
-    <div class="state-section">
-        <h3>Kano</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Katsina -->
-    <div class="state-section">
-        <h3>Katsina</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Kebbi -->
-    <div class="state-section">
-        <h3>Kebbi</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Kogi -->
-    <div class="state-section">
-        <h3>Kogi</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Kwara -->
-    <div class="state-section">
-        <h3>Kwara</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Lagos -->
-    <div class="state-section">
-        <h3>Lagos</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Nasarawa -->
-    <div class="state-section">
-        <h3>Nasarawa</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Niger -->
-    <div class="state-section">
-        <h3>Niger</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Ogun -->
-    <div class="state-section">
-        <h3>Ogun</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Ondo -->
-    <div class="state-section">
-        <h3>Ondo</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Osun -->
-    <div class="state-section">
-        <h3>Osun</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Oyo -->
-    <div class="state-section">
-        <h3>Oyo</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Plateau -->
-    <div class="state-section">
-        <h3>Plateau</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Rivers -->
-    <div class="state-section">
-        <h3>Rivers</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Sokoto -->
-    <div class="state-section">
-        <h3>Sokoto</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Taraba -->
-    <div class="state-section">
-        <h3>Taraba</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Yobe -->
-    <div class="state-section">
-        <h3>Yobe</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- Zamfara -->
-    <div class="state-section">
-        <h3>Zamfara</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-    <!-- FCT Abuja -->
-    <div class="state-section">
-        <h3>Federal Capital Territory (FCT) Abuja</h3>
-        <div class="position-grid">
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 1</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 2</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 3</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 4</div></div>
-            <div class="position-box"><div class="position-status available">AVAILABLE</div><div class="position-number">Position 5</div></div>
-        </div>
-    </div>
-
-</div>
-
+                <span>There are 5 consultant positions available in each of Nigeria's 36 states and the Federal Capital Territory.</span>
             </div>
 
+            <div class="states-list" id="statesContainer">
+                <!-- State sections loaded dynamically or rendered in HTML -->
+            </div>
         </div>
+    </main>
 
-  </main>
+    <!-- Consultant Login Modal for Reserved/Held Box Clicks -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-card">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>Consultant Login</h2>
+            <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">This position is already registered/held. Log in to access your dashboard.</p>
+            <form id="consultantLoginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="your.email@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" id="loginBtn">Log In to Dashboard</button>
+            </form>
+        </div>
+    </div>
 
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
 
-<script>
-async function loadConsultantPositions() {
-  const { data, error } = await supabaseClient
-    .from("consultant_positions")
-    .select("*")
-    .order("state")
-    .order("position_number");
+    <script>
+    const NIGERIAN_STATES = [
+        "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa", "Benue", "Borno", 
+        "Cross River", "Delta", "Ebonyi", "Edo", "Ekiti", "Enugu", "Gombe", "Imo", 
+        "Jigawa", "Kaduna", "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos", 
+        "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo", "Plateau", "Rivers", 
+        "Sokoto", "Taraba", "Yobe", "Zamfara", "FCT Abuja"
+    ];
 
-  if (error) {
-    console.error("Error fetching positions:", error);
-    return;
-  }
+    function renderStateGrid() {
+        const container = document.getElementById("statesContainer");
+        container.innerHTML = "";
 
-  document.querySelectorAll(".state-section").forEach((section) => {
-    const state = section.querySelector("h3").textContent.trim();
-    const boxes = section.querySelectorAll(".position-box");
+        NIGERIAN_STATES.forEach(state => {
+            const section = document.createElement("div");
+            section.className = "state-section";
+            section.dataset.state = state;
 
-    boxes.forEach((box, index) => {
-      const position = data.find(
-        (p) => p.state === state && p.position_number === index + 1
-      );
+            let boxesHtml = "";
+            for (let i = 1; i <= 5; i++) {
+                boxesHtml += `
+                    <div class="position-box" data-pos="${i}">
+                        <div class="position-status available">AVAILABLE</div>
+                        <div class="position-number">Position ${i}</div>
+                    </div>`;
+            }
 
-      if (!position) return;
-
-      const statusEl = box.querySelector(".position-status");
-      const numberEl = box.querySelector(".position-number");
-      
-      box.classList.remove("disabled", "selected");
-
-      if (position.status === "available") {
-        statusEl.textContent = "AVAILABLE";
-        statusEl.className = "position-status available";
-        numberEl.textContent = `Position ${position.position_number}`;
-      } else if (position.status === "held") {
-        statusEl.textContent = "HELD";
-        statusEl.className = "position-status held";
-        numberEl.textContent = position.applicant_name || `Position ${position.position_number}`;
-        box.classList.add("disabled");
-      } else if (position.status === "occupied") {
-        statusEl.textContent = "OCCUPIED";
-        statusEl.className = "position-status occupied";
-        numberEl.textContent = position.applicant_name || `Position ${position.position_number}`;
-        box.classList.add("disabled");
-      }
-    });
-  });
-}
-
-// Attach click events to position boxes
-document.querySelectorAll(".position-box").forEach((box) => {
-  box.addEventListener("click", async () => {
-    if (box.classList.contains("disabled")) return;
-
-    const stateName = box.closest(".state-section").querySelector("h3").textContent.trim();
-    const positionNumber = Number(
-      box.querySelector(".position-number").textContent.replace("Position ", "")
-    );
-
-    // Verify availability in real-time
-    const { data: position, error } = await supabaseClient
-      .from("consultant_positions")
-      .select("id")
-      .eq("state", stateName)
-      .eq("position_number", positionNumber)
-      .eq("status", "available")
-      .single();
-
-    if (error || !position) {
-      alert("This position has just been taken or is unavailable.");
-      loadConsultantPositions();
-      return;
+            section.innerHTML = `<h3>${state}</h3><div class="position-grid">${boxesHtml}</div>`;
+            container.appendChild(section);
+        });
     }
 
-    // Redirect to registration form with URL parameters
-    window.location.href = `consultant-form.html?state=${encodeURIComponent(stateName)}&position=${positionNumber}&position_id=${position.id}`;
-  });
-});
+    async function loadConsultantPositions() {
+        const { data, error } = await supabaseClient
+            .from("consultant_positions")
+            .select("*");
 
-// Initial load
-loadConsultantPositions();
-</script>
+        if (error) {
+            console.error("Error fetching positions:", error);
+            return;
+        }
 
-<script>
-const password = document.getElementById("password");
-const toggle = document.getElementById("togglePassword");
+        document.querySelectorAll(".state-section").forEach((section) => {
+            const state = section.dataset.state;
+            const boxes = section.querySelectorAll(".position-box");
 
-toggle.onclick = () => {
-  if(password.type === "password"){
-    password.type = "text";
-    toggle.textContent = "🙈";
-  }else{
-    password.type = "password";
-    toggle.textContent = "👁️";
-  }
-};
-</script>
-<script>
-const paymentInput = document.getElementById("paymentProof");
-const uploadBtn = document.querySelector(".upload-btn");
-const fileName = document.getElementById("fileName");
+            boxes.forEach((box) => {
+                const posNum = parseInt(box.dataset.pos);
+                const position = data.find(p => p.state === state && parseInt(p.position_number) === posNum);
 
-uploadBtn.addEventListener("click", () => paymentInput.click());
+                const statusEl = box.querySelector(".position-status");
+                const numberEl = box.querySelector(".position-number");
 
-paymentInput.addEventListener("change", () => {
-  fileName.textContent = paymentInput.files.length
-    ? paymentInput.files[0].name
-    : "No file selected";
-});
-</script>
+                if (!position) return;
+
+                box.dataset.positionId = position.id;
+                box.dataset.status = position.status;
+
+                if (position.status === "available") {
+                    statusEl.textContent = "AVAILABLE";
+                    statusEl.className = "position-status available";
+                    numberEl.textContent = `Position ${position.position_number}`;
+                } else if (position.status === "held") {
+                    statusEl.textContent = "HELD";
+                    statusEl.className = "position-status held";
+                    numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
+                } else if (position.status === "occupied") {
+                    statusEl.textContent = "OCCUPIED";
+                    statusEl.className = "position-status occupied";
+                    numberEl.textContent = position.applicant_name ? position.applicant_name : `Position ${position.position_number}`;
+                }
+            });
+        });
+    }
+
+    // Handle Clicks on Position Boxes
+    document.addEventListener("click", async (e) => {
+        const box = e.target.closest(".position-box");
+        if (!box) return;
+
+        const status = box.dataset.status || "available";
+        const stateName = box.closest(".state-section").dataset.state;
+        const posNum = box.dataset.pos;
+        const posId = box.dataset.positionId;
+
+        if (status === "available") {
+            // Verify and Redirect
+            const { data: position, error } = await supabaseClient
+                .from("consultant_positions")
+                .select("id")
+                .eq("state", stateName)
+                .eq("position_number", parseInt(posNum))
+                .eq("status", "available")
+                .single();
+
+            if (error || !position) {
+                alert("This position has just been reserved. Reloading list...");
+                loadConsultantPositions();
+                return;
+            }
+
+            window.location.href = `consultant-form.html?state=${encodeURIComponent(stateName)}&position=${posNum}&position_id=${position.id}`;
+        } else {
+            // Open Login Modal for Existing Consultants
+            document.getElementById("loginModal").classList.add("active");
+        }
+    });
+
+    // Modal Events
+    document.getElementById("closeModal").onclick = () => document.getElementById("loginModal").classList.remove("active");
+
+    document.getElementById("consultantLoginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        const loginBtn = document.getElementById("loginBtn");
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "Signing in...";
+
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+        if (error) {
+            alert("Login failed: " + error.message);
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Log In to Dashboard";
+        } else {
+            window.location.href = "consultant-dashboard.html";
+        }
+    });
+
+    // Init
+    renderStateGrid();
+    loadConsultantPositions();
+    </script>
 </body>
 </html>

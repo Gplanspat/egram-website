@@ -164,9 +164,13 @@
           ? 'badge-approved' 
           : (c.application_status === 'rejected' ? 'badge-rejected' : 'badge-pending');
 
-        const receiptLink = c.payment_proof 
-          ? `<a href="${c.payment_proof}" target="_blank" class="receipt-link">📄 View Receipt</a>` 
-          : `<span style="color:#9ca3af;">No proof</span>`;
+       const receiptUrl = c.payment_proof?.startsWith("http")
+  ? c.payment_proof
+  : `https://gqkrchcgyggskgiojtvf.supabase.co/storage/v1/object/public/consultant-receipts/${c.payment_proof}`;
+
+const receiptLink = c.payment_proof
+  ? `<a href="${receiptUrl}" target="_blank" class="receipt-link">View Receipt</a>`
+  : `<span style="color:#9ca3af;">No proof</span>`;
 
         table.innerHTML += `
           <tr>
@@ -229,39 +233,51 @@
       renderTable(filtered);
     }
 
-    async function approve(id, state, positionNumber, applicantName) {
-      if (!confirm("Approve this consultant application? This will generate their referral code and lock the position.")) return;
+    async function approveConsultant(applicationId, state, positionId) {
+    const approveBtn = document.getElementById(`approve-btn-${applicationId}`);
+    if (approveBtn) approveBtn.disabled = true;
 
-      const generatedCode = "egram-" + state.substring(0, 3).toLowerCase() + "-" + Math.random().toString(36).substring(2, 7);
+    try {
+        // 1. Generate Unique Consultant Code (e.g. EGC-LAGOS-001)
+        const stateCode = state.substring(0, 3).toUpperCase();
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const generatedCode = `EGC-${stateCode}-${randomNum}`;
 
-      // 1. Approve Application
-      const { error: appError } = await supabaseClient
-        .from("consultant_applications")
-        .update({
-          application_status: "approved",
-          payment_status: "approved",
-          consultant_code: generatedCode
-        })
-        .eq("id", id);
+        // 2. Update Application Status & Save Generated Code
+        const { error: appError } = await supabaseClient
+            .from("consultant_applications")
+            .update({
+                application_status: "approved",
+                payment_status: "approved",
+                consultant_code: generatedCode
+            })
+            .eq("id", applicationId);
 
-      if (appError) {
-        alert("Error approving application: " + appError.message);
-        return;
-      }
+        if (appError) throw appError;
 
-      // 2. Lock Position Box to Occupied
-      await supabaseClient
-        .from("consultant_positions")
-        .update({
-          status: "occupied",
-          applicant_name: applicantName
-        })
-        .eq("state", state)
-        .eq("position_number", positionNumber);
+        // 3. Update Position Status from 'held' to 'occupied'
+        if (positionId) {
+            await supabaseClient
+                .from("consultant_positions")
+                .update({ status: "occupied" })
+                .eq("id", positionId);
+        }
 
-      alert(`Consultant approved successfully!\nGenerated Code: ${generatedCode}`);
-      loadConsultants();
+        alert(`Consultant approved successfully!\nGenerated Code: ${generatedCode}`);
+        
+        // Reload table data
+        if (typeof loadAdminApplications === "function") {
+            loadAdminApplications();
+        } else {
+            window.location.reload();
+        }
+
+    } catch (err) {
+        alert("Approval failed: " + err.message);
+        if (approveBtn) approveBtn.disabled = false;
     }
+}
+
 
     async function reject(id, state, positionNumber) {
       if (!confirm("Reject this application? This will reopen the position box back to AVAILABLE.")) return;

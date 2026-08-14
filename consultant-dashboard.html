@@ -141,9 +141,13 @@ async function loadDashboard() {
   document.getElementById("position").textContent = `${data.selected_state} • Position ${data.position_number}`;
 
   // Receipt Link
-  if (data.payment_proof) {
-    document.getElementById("receiptLink").href = data.payment_proof;
-  }
+if (data.payment_proof) {
+  const receiptUrl = data.payment_proof.startsWith("http")
+    ? data.payment_proof
+    : `https://gqkrchcgyggskgiojtvf.supabase.co/storage/v1/object/public/consultant-receipts/${data.payment_proof}`;
+
+  document.getElementById("receiptLink").href = receiptUrl;
+}
 
   // Application & Payment Status Display
   const appStatusEl = document.getElementById("applicationStatus");

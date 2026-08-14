@@ -111,7 +111,7 @@ const positionId = params.get("position_id");
 document.getElementById("selectedPosition").textContent = `${state} — Position ${position}`;
 document.getElementById("selectedState").value = state;
 document.getElementById("selectedPositionNumber").value = position;
-document.getElementById("selectedPositionId").value = positionId;
+document.getElementById("selectedPositionId").value = positionId || "";
 
 // Toggle Password
 const passwordInput = document.getElementById("password");
@@ -140,24 +140,38 @@ paymentInput.addEventListener("change", () => {
 document.getElementById("consultantRegistrationForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Processing Registration...";
 
+    // 1. Check Receipt Upload BEFORE doing anything
     const proofFile = paymentInput.files[0];
     if (!proofFile) {
-        alert("Payment receipt proof is required to submit registration.");
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Submit Registration";
+        alert("Please upload a bank payment receipt before submitting your registration.");
         return;
     }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Processing Registration...";
 
     try {
         const formData = new FormData(e.target);
         const email = formData.get("email");
         const password = formData.get("password");
         const fullName = formData.get("full_name");
+        
+        // Ensure valid positionId
+        let parsedPositionId = positionId ? parseInt(positionId) : null;
 
-        // 1. Sign Up User
+        // If positionId wasn't passed in query string, fetch it now
+        if (!parsedPositionId) {
+            const { data: posData } = await supabaseClient
+                .from("consultant_positions")
+                .select("id")
+                .eq("state", state)
+                .eq("position_number", parseInt(position))
+                .single();
+            if (posData) parsedPositionId = posData.id;
+        }
+
+        // 2. Sign Up User in Supabase Auth
         const { data: authData, error: authError } = await supabaseClient.auth.signUp({
             email: email,
             password: password
@@ -165,7 +179,7 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
 
         if (authError) throw authError;
 
-        // 2. Upload Payment Receipt to Supabase Storage Bucket
+        // 3. Upload Payment Receipt
         const fileExt = proofFile.name.split('.').pop();
         const filePath = `${authData.user.id}-${Date.now()}.${fileExt}`;
         
@@ -179,7 +193,7 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
             .from("consultant-receipts")
             .getPublicUrl(filePath);
 
-        // 3. Save Consultant Application Record
+        // 4. Save Consultant Application Record
         const applicationData = {
             user_id: authData.user.id,
             full_name: fullName,
@@ -191,7 +205,7 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
             address: formData.get("address"),
             selected_state: state,
             position_number: parseInt(position),
-            position_id: positionId ? parseInt(positionId) : null,
+            position_id: parsedPositionId,
             payment_proof: publicUrlData.publicUrl,
             payment_status: "pending",
             application_status: "pending"
@@ -203,15 +217,15 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
 
         if (appError) throw appError;
 
-        // 4. Update Position Box to 'HELD' & Set Applicant Name
-        if (positionId) {
+        // 5. Update Position Box to 'HELD' & Set Applicant Name
+        if (parsedPositionId) {
             await supabaseClient
                 .from("consultant_positions")
                 .update({ 
                     status: "held",
                     applicant_name: fullName 
                 })
-                .eq("id", positionId);
+                .eq("id", parsedPositionId);
         } else {
             await supabaseClient
                 .from("consultant_positions")
@@ -233,6 +247,7 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
     }
 });
 </script>
+
 
 </body>
 </html>
