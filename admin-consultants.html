@@ -152,7 +152,7 @@
 
     function renderTable(data) {
       const table = document.getElementById("consultantTable");
-      table.innerHTML = "";
+      let rows = "";
 
       if (data.length === 0) {
         table.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#6b7280;">No records found.</td></tr>`;
@@ -183,7 +183,7 @@ const receiptLink = c.payment_proof
   ? `<a href="${receiptUrl}" target="_blank" class="receipt-link">View Receipt</a>`
   : `<span style="color:#9ca3af;">No proof</span>`;
 
-        table.innerHTML += `
+       rows += `
           <tr>
             <td>
               <strong>${c.full_name || 'N/A'}</strong>
@@ -205,7 +205,7 @@ const receiptLink = c.payment_proof
             <td>
               <div class="action-btns">
                 ${c.application_status !== "approved" ? `
-                  <button class="btn-approve" onclick="approve('${c.id}', '${c.selected_state}', ${c.position_number}, '${c.full_name}')">
+                  <button class="btn-approve"onclick="approveConsultant('${c.id}','${c.selected_state}','${c.position_id}')">
                     Approve
                   </button>
                 ` : ''}
@@ -216,7 +216,7 @@ const receiptLink = c.payment_proof
                   </button>
                 ` : ''}
 
-                <button class="btn-delete" onclick="deleteRecord('${c.id}', '${c.selected_state}', ${c.position_number})">
+                <button class="btn-delete" onclick="deleteRecord('${c.id}', '${c.position_id}')">
                   🗑️
                 </button>
               </div>
@@ -224,6 +224,7 @@ const receiptLink = c.payment_proof
           </tr>
         `;
       });
+      table.innerHTML = rows;
     }
 
     function filterData() {
@@ -321,7 +322,7 @@ const receiptLink = c.payment_proof
       loadConsultants();
     }
 
-    async function deleteRecord(id, state, positionNumber) {
+   async function deleteRecord(id, positionId) {
       if (!confirm("Are you sure you want to permanently delete this application record?")) return;
 
       const { error } = await supabaseClient
@@ -334,15 +335,13 @@ const receiptLink = c.payment_proof
         return;
       }
 
-      // Free up position box
       await supabaseClient
-        .from("consultant_positions")
-        .update({
-          status: "available",
-          applicant_name: null
-        })
-        .eq("state", state)
-        .eq("position_number", positionNumber);
+  .from("consultant_positions")
+  .update({
+    status: "available",
+    applicant_name: null
+  })
+  .eq("id", positionId);
 
       alert("Record deleted.");
       loadConsultants();
