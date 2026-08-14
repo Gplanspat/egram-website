@@ -227,6 +227,19 @@
     // Init
     renderStateGrid();
     loadConsultantPositions();
+
+    supabaseClient
+  .channel("consultant-live")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "consultant_positions"
+    },
+    () => loadConsultantPositions()
+  )
+  .subscribe();
     </script>
 </body>
 </html>

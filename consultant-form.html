@@ -243,32 +243,17 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
         if (appError) throw appError;
 
         // 5. Update Position Box to 'HELD' & Set Applicant Name
-        if (parsedPositionId) {
-            const { error: updatePosError } = await supabaseClient
-                .from("consultant_positions")
-                .update({ 
-                    status: "held",
-                    applicant_name: fullName 
-                })
-                .eq("id", parsedPositionId);
+       // 5. Hold the selected position and save applicant name
+const { error: updatePosError } = await supabaseClient
+  .from("consultant_positions")
+  .update({
+    status: "held",
+    applicant_name: fullName
+  })
+  .eq("id", parsedPositionId)
+  .select();
 
-            if (updatePosError) {
-                console.error("Failed to hold position box:", updatePosError.message);
-            }
-        } else {
-            const { error: updatePosError } = await supabaseClient
-                .from("consultant_positions")
-                .update({ 
-                    status: "held",
-                    applicant_name: fullName 
-                })
-                .eq("state", state)
-                .eq("position_number", parseInt(position));
-
-            if (updatePosError) {
-                console.error("Failed to hold position box:", updatePosError.message);
-            }
-        }
+if (updatePosError) throw updatePosError;
 
         alert("Registration submitted successfully! Your position is now held pending admin approval.");
         window.location.href = "consultant-dashboard.html";
