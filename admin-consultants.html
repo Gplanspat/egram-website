@@ -133,9 +133,9 @@
         return;
       }
 
-      allConsultants = data || [];
-      updateStats();
-      renderTable(allConsultants);
+     allConsultants = data ?? [];
+renderTable(allConsultants);
+updateStats();
     }
 
     function updateStats() {
@@ -277,12 +277,7 @@ const receiptLink = c.payment_proof
 
         alert(`Consultant approved successfully!\nGenerated Code: ${generatedCode}`);
         
-        // Reload table data
-        if (typeof loadAdminApplications === "function") {
-            loadAdminApplications();
-        } else {
-            window.location.reload();
-        }
+      await loadConsultants();
 
     } catch (err) {
         alert("Approval failed: " + err.message);
