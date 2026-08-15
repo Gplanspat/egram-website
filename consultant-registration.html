@@ -70,7 +70,13 @@
             <form id="consultantLoginForm">
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" id="loginEmail" required placeholder="your.email@example.com">
+                   <div style="position:relative;">
+  <input type="password" id="loginPassword" required placeholder="••••••••" style="padding-right:45px;">
+  <span id="togglePassword"
+        style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:18px;">
+    👁️
+  </span>
+</div>
                 </div>
                 <div class="form-group">
                     <label>Password</label>
@@ -223,6 +229,19 @@
             window.location.href = "consultant-dashboard.html";
         }
     });
+
+    const toggle = document.getElementById("togglePassword");
+const password = document.getElementById("loginPassword");
+
+toggle.addEventListener("click", () => {
+  if (password.type === "password") {
+    password.type = "text";
+    toggle.textContent = "🙈";
+  } else {
+    password.type = "password";
+    toggle.textContent = "👁️";
+  }
+});
 
     // Init
     renderStateGrid();
