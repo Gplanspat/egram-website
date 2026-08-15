@@ -107,13 +107,18 @@ const heroSlide = document.getElementById("heroSlide");
 
 if (heroSlide) {
   const slides = [
-    "images/hero/slide6.png",
-    "images/hero/slide7.png",
-    "images/hero/slide8.png",
-    "images/hero/slide9.png",
-    "images/hero/slide10.png",
-    "images/hero/slide11.png"
-  ];
+  "images/hero/slide1.png",
+  "images/hero/slide2.png",
+  "images/hero/slide3.png",
+  "images/hero/slide4.png",
+  "images/hero/slide5.png",
+  "images/hero/slide6.png",
+  "images/hero/slide7.png",
+  "images/hero/slide8.png",
+  "images/hero/slide9.png",
+  "images/hero/slide10.png",
+  "images/hero/slide11.png"
+];
 
   let current = 0;
   setInterval(() => {
