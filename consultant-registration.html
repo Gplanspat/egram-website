@@ -73,11 +73,19 @@
            <input type="email" id="loginEmail" required placeholder="your.email@example.com">
                 </div>
         
-                <div class="form-group">
-                    <label>Password</label>
-                   <input type="password" id="loginPassword" required placeholder="••••••••" style="padding-right:45px;">
-  <span id="togglePassword">
-                </div>
+               <div style="position:relative;">
+  <input
+    type="password"
+    id="loginPassword"
+    required
+    placeholder="••••••••"
+    style="padding-right:45px;">
+  <span
+    id="togglePassword"
+    style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:18px;">
+    👁️
+  </span>
+</div>
                 <button type="submit" id="loginBtn">Log In to Dashboard</button>
             </form>
         </div>
