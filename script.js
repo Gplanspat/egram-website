@@ -121,6 +121,7 @@ if (heroSlide) {
 ];
 
   let current = 0;
+  heroSlide.src = slides[0];
   setInterval(() => {
     current = (current + 1) % slides.length;
     heroSlide.src = slides[current];
