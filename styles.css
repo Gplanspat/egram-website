@@ -2343,4 +2343,26 @@ section {
     background:#cbd5e1;
 }
 
+.portal-strip{
+  display:flex;
+  justify-content:center;
+  gap:36px;
+  margin:0 0 28px;
+  font-size:24px;
+  font-weight:800;
+  color:#0f172a;
+  width:100%;
+}
+
+.portal-strip span{
+  position:relative;
+}
+
+.portal-strip span:not(:last-child)::after{
+  content:"|";
+  position:absolute;
+  right:-20px;
+  color:#94a3b8;
+}
+
 }
