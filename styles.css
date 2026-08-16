@@ -243,23 +243,21 @@ body {
 
 .hero-dashboard{
     width: 100%;
-    max-width: 320px;
-   aspect-ratio: 16 / 9;
+    max-width: 520px;   /* Bigger rectangle */
+    aspect-ratio: 16/9;
     background: #fff;
     border-radius: 20px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,.15);
 }
 .hero-slide{
     width: 100%;
-    max-width: 420px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+    height: 100%;
+    object-fit: cover;
     border-radius: 20px;
-    object-fit: contain;
 }
 
 .dashboard-topbar {
