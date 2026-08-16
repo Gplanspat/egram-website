@@ -2340,22 +2340,46 @@ section {
     flex-wrap: nowrap !important; /* Prevents stacking onto a new line */
 }
 
-/* Force image sizing */
-.portal-item img {
-    width: 24px !important;  /* Adjust size as needed */
-    height: 24px !important; /* Keeps height identical */
-    max-width: 24px !important;
-    max-height: 24px !important;
-    object-fit: contain !important;
-    display: block !important;
+
+
+.portal-marquee{
+  width:100%;
+  overflow:hidden;
+  margin-bottom:24px;
 }
 
-/* Prevent container overflow */
-.portal-item {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    white-space: nowrap !important;
+.portal-track{
+  display:flex;
+  gap:32px;
+  width:max-content;
+  animation:scrollLeft 18s linear infinite;
+}
+
+.portal-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+  font-weight:600;
+}
+
+.portal-item img{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+@keyframes scrollLeft{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+
+@media (max-width:768px){
+  .portal-item img{
+    width:30px;
+    height:30px;
+  }
 }
 
 
