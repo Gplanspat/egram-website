@@ -2346,11 +2346,11 @@ section {
 }
 
 .portal-item img{
-  width:24px;
-  height:24px;
-  border-radius:50%;
-  object-fit:cover;
-  border-radius: 50%;
+    width:12px;
+    height:12px;
+    object-fit:cover;
+    border-radius:50%;
+    display:block;
 }
 
 }
