@@ -2321,48 +2321,34 @@ section {
   }
 
 
-  .hero-users{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:28px;
-    margin:0 auto 32px;
-    width:100%;
-}
-
-.user-item{
-    font-size:28px;
-    font-weight:800;
-    color:#0f172a;
-    white-space:nowrap;
-}
-
-.divider{
-    width:1px;
-    height:42px;
-    background:#cbd5e1;
-}
 
 .portal-strip{
   display:flex;
   justify-content:center;
-  gap:36px;
-  margin:0 0 28px;
-  font-size:24px;
+  gap:38px;
+  margin-bottom:28px;
+  flex-wrap:wrap;
+}
+
+.portal-item{
+  text-align:center;
+}
+
+.portal-item img{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #2563eb;
+  box-shadow:0 8px 18px rgba(37,99,235,.18);
+}
+
+.portal-item span{
+  display:block;
+  margin-top:10px;
+  font-size:18px;
   font-weight:800;
   color:#0f172a;
-  width:100%;
-}
-
-.portal-strip span{
-  position:relative;
-}
-
-.portal-strip span:not(:last-child)::after{
-  content:"|";
-  position:absolute;
-  right:-20px;
-  color:#94a3b8;
 }
 
 }
