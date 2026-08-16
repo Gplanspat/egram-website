@@ -242,24 +242,15 @@ body {
 }
 
 .hero-dashboard{
-    width: 100%;
-    max-width: 320px;
-   aspect-ratio: 16 / 9;
-    background: #fff;
-    border-radius: 20px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:transparent;
+    box-shadow:none;
 }
+
 .hero-slide{
-    width: 100%;
-    max-width: 420px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-    border-radius: 20px;
-    object-fit: contain;
+    display:none;
 }
 
 .dashboard-topbar {
