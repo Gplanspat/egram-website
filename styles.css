@@ -206,18 +206,15 @@ body {
     right: 20%;
 }
 
-.hero-content{
-    display:grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap:2rem;
-    align-items:center;
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
-.hero-dashboard{
-    width:100%;
-    max-width:420px;
-    margin-left:auto;
-}
 .hero-text h1 {
     font-size: 3.5rem;
     font-weight: 800;
@@ -244,6 +241,26 @@ body {
     align-items: center;
 }
 
+.hero-dashboard{
+    width: 100%;
+    max-width: 320px;
+   aspect-ratio: 16 / 9;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hero-slide{
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 20px;
+    object-fit: contain;
+}
 
 .dashboard-topbar {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
@@ -2315,100 +2332,25 @@ section {
   flex-wrap:wrap;
 }
 
+.portal-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:18px;
+  font-weight:800;
+  color:#1E40AF;
+}
 
 .portal-item:nth-child(even){
   color:#0EA5E9;
 }
 
-/* Container to force items into a single horizontal row */
-.portal-container, 
-.portals-wrapper, 
-.portal-list {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 15px !important; /* Space between icons */
-    flex-wrap: nowrap !important; /* Prevents stacking onto a new line */
-}
-
-
-
-/* HERO SLIDESHOW */
-
-
-
-.hero-slide{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    object-position: center;
-    display: block;
-    border-radius: 24px;
-    background: #fff;
-}
-
-/* SCROLLING FLYER */
-.portal-marquee{
-    position: absolute;
-    top: 20px;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    z-index: 10;
-}
-
-.hero-dashboard{
-    position:relative;
-    overflow:hidden;
-    border-radius:24px;
-    width:100%;
-    aspect-ratio:16/9;
-    background:#fff;
-}
-
-.hero-slide{
-    width:100%;
-    height:100%;
+.portal-item img{
+    width:12px;
+    height:12px;
     object-fit:cover;
-    object-position:center;
+    border-radius:50%;
     display:block;
 }
-
-.portal-track{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:18px;
-    white-space:nowrap;
-    animation:flyerScroll 18s linear infinite;
-}
-
-.portal-item img{
-    width:28px;
-    height:28px;
-    border-radius:50%;
-}
-
-@keyframes flyerScroll{
-    from{ transform: translateX(100%); }
-    to{ transform: translateX(-100%); }
-}
-
-/* MOBILE */
-@media (max-width:768px){
-    .portal-marquee{ top: 12px; }
-
-    .portal-item{
-        font-size: 13px;
-    }
-
-    .portal-item img{
-        width: 28px;
-        height: 28px;
-    }
-}
-
-
 
 }
