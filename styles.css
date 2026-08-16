@@ -243,7 +243,7 @@ body {
 
 .hero-dashboard{
     width: 100%;
-    max-width: 420px;
+    max-width: 320px;
    aspect-ratio: 16 / 9;
     background: #fff;
     border-radius: 20px;
@@ -2345,12 +2345,14 @@ section {
   color:#0EA5E9;
 }
 
-.portal-item img{
-    width:12px;
-    height:12px;
-    object-fit:cover;
-    border-radius:50%;
-    display:block;
+.portal-item img {
+    width: auto;
+    height: 32px; /* Adjust this value to match your desired icon proportion relative to the eGram logo */
+    max-width: 40px;
+    object-fit: contain;
+    border-radius: 50%;
+    display: block;
 }
+
 
 }
