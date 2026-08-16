@@ -2321,34 +2321,33 @@ section {
   }
 
 
-
-.portal-strip{
+.portal-row{
   display:flex;
   justify-content:center;
-  gap:38px;
-  margin-bottom:28px;
+  align-items:center;
+  gap:36px;
+  margin:0 0 28px;
   flex-wrap:wrap;
 }
 
 .portal-item{
-  text-align:center;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:18px;
+  font-weight:800;
+  color:#1E40AF;
+}
+
+.portal-item:nth-child(even){
+  color:#0EA5E9;
 }
 
 .portal-item img{
-  width:72px;
-  height:72px;
+  width:34px;
+  height:34px;
   border-radius:50%;
   object-fit:cover;
-  border:3px solid #2563eb;
-  box-shadow:0 8px 18px rgba(37,99,235,.18);
-}
-
-.portal-item span{
-  display:block;
-  margin-top:10px;
-  font-size:18px;
-  font-weight:800;
-  color:#0f172a;
 }
 
 }
