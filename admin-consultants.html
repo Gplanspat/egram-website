@@ -252,7 +252,19 @@
    async function approveConsultant(applicationId, state, positionId, applicantName) {
 
   const stateCode = state.substring(0,3).toUpperCase();
-  const consultantCode = `EGC-${stateCode}-${Math.floor(1000+Math.random()*9000)}`;
+ const consultantCode = `EGC-${stateCode}-${Math.floor(1000+Math.random()*9000)}`;
+
+const application = allConsultants.find(c => c.id === applicationId);
+
+await supabaseClient
+  .from("consultants")
+  .upsert({
+    user_id: application.user_id,
+    full_name: application.full_name,
+    email: application.email,
+    phone: application.phone,
+    consultant_code: consultantCode,
+  });
 
  const { data, error } = await supabaseClient
   .from("consultant_applications")
