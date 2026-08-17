@@ -236,11 +236,26 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
             application_status: "pending"
         };
 
-        const { error: appError } = await supabaseClient
-            .from("consultant_applications")
-            .insert([applicationData]);
+       const { data: existing } = await supabaseClient
+  .from("consultant_applications")
+  .select("id")
+  .eq("user_id", userId)
+  .maybeSingle();
 
-        if (appError) throw appError;
+let appError;
+
+if (existing) {
+  ({ error: appError } = await supabaseClient
+    .from("consultant_applications")
+    .update(applicationData)
+    .eq("id", existing.id));
+} else {
+  ({ error: appError } = await supabaseClient
+    .from("consultant_applications")
+    .insert([applicationData]));
+}
+
+if (appError) throw appError;
 
         // 5. Update Position Box to 'HELD' & Set Applicant Name
        // 5. Hold the selected position and save applicant name
