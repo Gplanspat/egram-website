@@ -204,6 +204,14 @@ document.getElementById("consultantRegistrationForm").addEventListener("submit",
             userId = authData.user.id;
         }
 
+        await supabaseClient.from("users").upsert({
+  id: userId,
+  role: "consultant",
+  full_name: fullName,
+  email: email,
+  is_active: true
+});
+
         // 3. Upload Payment Receipt
         const fileExt = proofFile.name.split('.').pop();
         const filePath = `${userId}-${Date.now()}.${fileExt}`;
@@ -255,7 +263,7 @@ if (existing) {
     .insert([applicationData]));
 }
 
-if (appError) throw appError;
+if (appError) throw appError;f
 
         // 5. Update Position Box to 'HELD' & Set Applicant Name
        // 5. Hold the selected position and save applicant name
