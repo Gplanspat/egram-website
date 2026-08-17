@@ -278,6 +278,13 @@ const { error: updatePosError } = await supabaseClient
 
 if (updatePosError) throw updatePosError;
 
+await supabaseClient.from("consultants").upsert({
+  user_id: userId,
+  consultant_code: null,
+  bank_name: null,
+  bank_code: null
+});
+
         alert("Registration submitted successfully! Your position is now held pending admin approval.");
         window.location.href = "consultant-dashboard.html";
 
