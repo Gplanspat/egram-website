@@ -114,82 +114,157 @@ View Official Receipt
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="supabase.js"></script>
+
 
 <script>
 
 async function loadDashboard() {
+
   const { data: { user } } = await supabaseClient.auth.getUser();
 
+
   if (!user) {
+
     window.location.href = "consultant-login.html";
+
     return;
+
   }
+
+
+  // Fetch primary application data
 
   const { data, error } = await supabaseClient
+
     .from("consultant_applications")
+
     .select("*")
+
     .eq("user_id", user.id)
+
     .single();
 
+
   if (error || !data) {
+
     console.error("Error loading application:", error);
+
     return;
+
   }
+
+
+  // Fetch actual approved code from consultants table
+
+  const { data: consultantProfile } = await supabaseClient
+
+    .from("consultants")
+
+    .select("consultant_code")
+
+    .eq("user_id", user.id)
+
+    .maybeSingle();
+
+
+  const activeCode = consultantProfile?.consultant_code || data.consultant_code || 'Generating...';
+
 
   document.getElementById("name").textContent = data.full_name;
+
   document.getElementById("position").textContent = `${data.selected_state} • Position ${data.position_number}`;
 
+
   // Receipt Link
-if (data.payment_proof) {
-  let receiptUrl = data.payment_proof;
-  
-  if (!data.payment_proof.startsWith("http")) {
-    const { data: publicData } = supabaseClient.storage
-      .from('consultant-receipts')
-      .getPublicUrl(data.payment_proof);
-      
-    receiptUrl = publicData.publicUrl;
+
+  if (data.payment_proof) {
+
+    let receiptUrl = data.payment_proof;
+
+    if (!data.payment_proof.startsWith("http")) {
+
+      const { data: publicData } = supabaseClient.storage
+
+        .from('consultant-receipts')
+
+        .getPublicUrl(data.payment_proof);
+
+        
+
+      receiptUrl = publicData.publicUrl;
+
+    }
+
+    document.getElementById("receiptLink").href = receiptUrl;
+
   }
 
-  document.getElementById("receiptLink").href = receiptUrl;
-}
 
-  // Application & Payment Status Display
+  // Status & Code Display
+
   const appStatusEl = document.getElementById("applicationStatus");
+
   const payStatusEl = document.getElementById("paymentStatus");
 
+
   if (data.application_status === "approved") {
+
     appStatusEl.innerHTML = `
+
       <span class="badge approved">APPROVED</span>
+
       <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;">
+
         <strong style="color: #166534;">Your Consultant Referral Code:</strong>
+
         <div style="font-size: 20px; font-weight: bold; color: #15803d; letter-spacing: 1px; margin-top: 4px;">
-          ${data.consultant_code || 'Generating...'}
+
+          ${activeCode}
+
         </div>
+
         <small style="color: #4b5563;">Use this code when registering schools to earn your subscription commissions.</small>
+
       </div>
+
     `;
+
     document.getElementById("receiptBtn").style.display = "block";
+
     document.getElementById("receiptBtn").disabled = false;
+
   } else {
+
     appStatusEl.innerHTML = '<span class="badge pending">UNDER REVIEW</span>';
+
     document.getElementById("receiptBtn").disabled = true;
+
   }
 
+
   if (data.payment_status === "approved") {
+
     payStatusEl.innerHTML = '<span class="badge approved">PAYMENT VERIFIED</span>';
+
   } else {
+
     payStatusEl.innerHTML = '<span class="badge pending">PENDING VERIFICATION</span>';
+
   }
+
 }
+
 
 loadDashboard();
 
-document.getElementById("receiptBtn").addEventListener("click", () => {
-  window.location.href = "consultant-receipt.html";
-});
 
+document.getElementById("receiptBtn").addEventListener("click", () => {
+
+  window.location.href = "consultant-receipt.html";
+
+});
 
 </script>
 
